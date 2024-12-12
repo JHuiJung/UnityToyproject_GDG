@@ -72,4 +72,7 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # .idea
-.idea/
+/.idea/
+
+# python venv
+/DiscordBot/.venv/
