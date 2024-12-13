@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
+
     [SerializeField]
     GameObject cursorObj; // 커서 오브젝트
 
@@ -13,9 +14,13 @@ public class PlayerManager : MonoBehaviour
     [SerializeField]
     Vector2 boundPos = Vector2.one; // 커서 범위 제한
 
-    //테스트용 케익
+    //장전된 케이크
     [SerializeField]
-    GameObject TestObj;
+    GameObject HoldingCake;
+
+
+    [SerializeField, Header("CakeList")]
+    CakeList cakeList;
 
     private void Update()
     {
@@ -36,8 +41,25 @@ public class PlayerManager : MonoBehaviour
         // 케익 드랍
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            DropCake();
+
+            if (HoldingCake != null) 
+            {
+                // 장전 돼있을 때
+                DropCake();
+            }
+            else
+            {
+                // 장전 인돼있을 때
+                ReloadCake();
+            }
+
+            
         }
+    }
+
+    public void ReloadCake()
+    {
+        HoldingCake = cakeList.GetCakeInfoRandomByWeight().cakeObj;
     }
 
     public void DropCake()
@@ -46,8 +68,10 @@ public class PlayerManager : MonoBehaviour
     new Vector3(cursorObj.transform.position.x, cursorObj.transform.position.y, Camera.main.nearClipPlane + 1f)
 );
 
-        var np = Instantiate(TestObj);
+        var np = Instantiate(HoldingCake);
         np.transform.position = worldPos;
+
+        HoldingCake = null;
     }
 
     // 커서 이동

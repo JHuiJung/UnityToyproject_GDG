@@ -1,0 +1,90 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee2dc05754504d14fadac26cd4c9e45e, type: 3}
+  m_Name: NewCakeList
+  m_EditorClassIdentifier: 
+  cakes:
+  - cakeType: 0
+    cakeObj: {fileID: 2245201797828959451, guid: bbe4e6112889a63478a7102c630a50e4, type: 3}
+    cakeNumber: 0
+  - cakeType: 0
+    cakeObj: {fileID: 3584179441140112658, guid: 8fb10a87e20c86144aab1aed02d825b9, type: 3}
+    cakeNumber: 0
+  - cakeType: 0
+    cakeObj: {fileID: 7571313977648643312, guid: 98d5a360fcc3b44439b750aec4c5c0e0, type: 3}
+    cakeNumber: 0
+  - cakeType: 0
+    cakeObj: {fileID: 8952308227425917237, guid: 53a1258d4da26494486e871954d3c87d, type: 3}
+    cakeNumber: 0
+  - cakeType: 0
+    cakeObj: {fileID: 8952308227425917237, guid: 53a1258d4da26494486e871954d3c87d, type: 3}
+    cakeNumber: 0
+  - cakeType: 1
+    cakeObj: {fileID: 8994416614352921306, guid: 1a87db4dcbd840a4b8d31356e0af782a, type: 3}
+    cakeNumber: 0
+  - cakeType: 1
+    cakeObj: {fileID: 6361789022638078774, guid: a229ea9655d27cf4abbe5376ba02d09e, type: 3}
+    cakeNumber: 0
+  - cakeType: 1
+    cakeObj: {fileID: 5836455483115945114, guid: ea25f4f050d31b84e8140951e77e562e, type: 3}
+    cakeNumber: 0
+  - cakeType: 1
+    cakeObj: {fileID: 3698660811009714124, guid: ba1261631997fc142bf4da6289da139b, type: 3}
+    cakeNumber: 0
+  - cakeType: 1
+    cakeObj: {fileID: 6980732333366579071, guid: a18c41bfece078e4383bb1872d7eab2c, type: 3}
+    cakeNumber: 0
+  - cakeType: 2
+    cakeObj: {fileID: 2282755248786431051, guid: 58b08d45e0f84ee4db87ea1c6c0e9547, type: 3}
+    cakeNumber: 0
+  - cakeType: 2
+    cakeObj: {fileID: 3313279634119195287, guid: f5ee12a97832ab04dbb820e9c30c21f2, type: 3}
+    cakeNumber: 0
+  - cakeType: 2
+    cakeObj: {fileID: 6747537554148741011, guid: b4cbfa784ad76874ca97a1c4e69c1c4b, type: 3}
+    cakeNumber: 0
+  - cakeType: 2
+    cakeObj: {fileID: 2767470636312211507, guid: 3edb4a24a873d88429081a09111a6811, type: 3}
+    cakeNumber: 0
+  - cakeType: 2
+    cakeObj: {fileID: 6138038147797605976, guid: 6d04dc5234fbe554a85d5e4f7a74172c, type: 3}
+    cakeNumber: 0
+  - cakeType: 3
+    cakeObj: {fileID: 3543871027485579549, guid: 659669b02e6b9e540a2fe252285f41ef, type: 3}
+    cakeNumber: 0
+  - cakeType: 3
+    cakeObj: {fileID: 8327135269486809794, guid: 22e62bd7a0e1bf44d97238cf09bd3396, type: 3}
+    cakeNumber: 0
+  - cakeType: 3
+    cakeObj: {fileID: 1880838836310273692, guid: 865e702f7c77f5d4bb949a1277ca074b, type: 3}
+    cakeNumber: 0
+  - cakeType: 3
+    cakeObj: {fileID: 945402109450095530, guid: f28d58bc78d73bf4bb886df284b9ab79, type: 3}
+    cakeNumber: 0
+  - cakeType: 3
+    cakeObj: {fileID: 2785295550479233899, guid: d1d82823d05230c43943a1fc904759d1, type: 3}
+    cakeNumber: 0
+  - cakeType: 4
+    cakeObj: {fileID: 2790575271160320178, guid: 968e95258391dd541b7a9f9e36f9ebc4, type: 3}
+    cakeNumber: 0
+  - cakeType: 4
+    cakeObj: {fileID: 3198674408176705228, guid: 8b63a05d663648943aaa048cab6e5c78, type: 3}
+    cakeNumber: 0
+  - cakeType: 4
+    cakeObj: {fileID: 4303306110196332908, guid: f395d0db0ba014a4cafcb94764393fa4, type: 3}
+    cakeNumber: 0
+  - cakeType: 4
+    cakeObj: {fileID: 7989440395548155105, guid: 647aefb12c836e2428f8b3b41e279249, type: 3}
+    cakeNumber: 0
+  - cakeType: 4
+    cakeObj: {fileID: 5481217784535829020, guid: b948bf9539a1a8e4ea681b3250d8eb66, type: 3}
+    cakeNumber: 0
