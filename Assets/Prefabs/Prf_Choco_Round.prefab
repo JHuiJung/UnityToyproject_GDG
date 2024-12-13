@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8835915794643827114}
   - component: {fileID: 2770907617939070740}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,9 +93,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3575539420795075385}
+  - component: {fileID: 905909291378940014}
   - component: {fileID: 6567783240010485935}
   - component: {fileID: 7043108423384802934}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Prf_Choco_Round
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118,6 +119,18 @@ Transform:
   - {fileID: 8835915794643827114}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &905909291378940014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8952308227425917237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a21f8b1b5222bb48a21704d2d1ed2ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!50 &6567783240010485935
 Rigidbody2D:
   serializedVersion: 4
@@ -127,7 +140,7 @@ Rigidbody2D:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8952308227425917237}
   m_BodyType: 0
-  m_Simulated: 1
+  m_Simulated: 0
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1

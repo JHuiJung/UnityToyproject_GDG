@@ -9,9 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8801322527733104584}
+  - component: {fileID: 1675577445487557410}
   - component: {fileID: 4560953614083931788}
   - component: {fileID: 8852408999477129593}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Prf_Blue_Round
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34,6 +35,18 @@ Transform:
   - {fileID: 6794182484968996784}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1675577445487557410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2785295550479233899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a21f8b1b5222bb48a21704d2d1ed2ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!50 &4560953614083931788
 Rigidbody2D:
   serializedVersion: 4
@@ -43,7 +56,7 @@ Rigidbody2D:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2785295550479233899}
   m_BodyType: 0
-  m_Simulated: 1
+  m_Simulated: 0
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 10
@@ -126,7 +139,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6794182484968996784}
   - component: {fileID: 2482757219156130355}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}

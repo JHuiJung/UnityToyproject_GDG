@@ -9,9 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8564318849902380404}
+  - component: {fileID: 5064660421754687441}
   - component: {fileID: 2390379414356844119}
   - component: {fileID: 4452196701025891623}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Prf_Red_Piece
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34,6 +35,18 @@ Transform:
   - {fileID: 1315895801790801504}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5064660421754687441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2767470636312211507}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a21f8b1b5222bb48a21704d2d1ed2ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!50 &2390379414356844119
 Rigidbody2D:
   serializedVersion: 4
@@ -43,7 +56,7 @@ Rigidbody2D:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2767470636312211507}
   m_BodyType: 0
-  m_Simulated: 1
+  m_Simulated: 0
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 6
@@ -121,7 +134,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1315895801790801504}
   - component: {fileID: 8476337144379581713}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}

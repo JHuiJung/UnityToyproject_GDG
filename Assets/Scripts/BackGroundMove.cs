@@ -36,7 +36,7 @@ public class BackGroundMove : MonoBehaviour
         {
             if(obj.transform.position.y > CheckHeight)
             {
-                obj.transform.position = new Vector3(0f,-30f,0f);
+                obj.transform.position = new Vector3(0f,-30f,10f);
             }
         }
     }

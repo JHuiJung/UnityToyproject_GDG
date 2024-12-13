@@ -12,17 +12,29 @@ public class PlayerManager : MonoBehaviour
     float cursorSpeed = 8f; // 커서 속도
 
     [SerializeField]
+    float rotateSpeed = 60f;
+
+    [SerializeField]
     Vector2 boundPos = Vector2.one; // 커서 범위 제한
 
     //장전된 케이크
     [SerializeField]
     GameObject HoldingCake;
 
+    [SerializeField,Space(10)]
+    LineRenderer lineRenderer;
 
-    [SerializeField, Header("CakeList")]
+    [Space(10),SerializeField, Header("CakeList")]
     CakeList cakeList;
 
     private void Update()
+    {
+
+        PlayerInput();
+        DrawRay();
+    }
+
+    void PlayerInput()
     {
 
         // 왼쪽이동
@@ -37,12 +49,24 @@ public class PlayerManager : MonoBehaviour
             MoveCursor(false);
         }
 
+        // 좌 회전
+        if (Input.GetKey(KeyCode.Q))
+        {
+            RotateHoldingCake(true);
+        }
+
+        // 우 회전
+        if (Input.GetKey(KeyCode.E))
+        {
+            RotateHoldingCake(false);
+        }
+
 
         // 케익 드랍
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
 
-            if (HoldingCake != null) 
+            if (HoldingCake != null)
             {
                 // 장전 돼있을 때
                 DropCake();
@@ -53,25 +77,45 @@ public class PlayerManager : MonoBehaviour
                 ReloadCake();
             }
 
-            
+
         }
     }
 
     public void ReloadCake()
     {
-        HoldingCake = cakeList.GetCakeInfoRandomByWeight().cakeObj;
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(
+    new Vector3(cursorObj.transform.position.x, cursorObj.transform.position.y, Camera.main.nearClipPlane + 1f)
+);
+        
+
+        HoldingCake = Instantiate(cakeList.GetCakeInfoRandomByWeight().cakeObj);
+        HoldingCake.transform.position = worldPos;
+        lineRenderer.enabled = true;
     }
 
     public void DropCake()
     {
-        Vector3 worldPos = Camera.main.ScreenToWorldPoint(
-    new Vector3(cursorObj.transform.position.x, cursorObj.transform.position.y, Camera.main.nearClipPlane + 1f)
-);
-
-        var np = Instantiate(HoldingCake);
-        np.transform.position = worldPos;
-
+        HoldingCake.GetComponent<Cake>().Drop();
+        lineRenderer.enabled = false;
         HoldingCake = null;
+    }
+
+    public void RotateHoldingCake(bool isRotateLeft)
+    {
+        if (HoldingCake == null)
+            return;
+
+        if(isRotateLeft)
+        {
+            HoldingCake.transform.Rotate(Vector3.forward, rotateSpeed * Time.deltaTime);
+        }
+        else
+        {
+
+            HoldingCake.transform.Rotate(Vector3.back, rotateSpeed * Time.deltaTime);
+        }
+
+
     }
 
     // 커서 이동
@@ -104,7 +148,48 @@ public class PlayerManager : MonoBehaviour
             //print(0);
         }
 
+        if(HoldingCake != null)
+        {
+            Vector3 worldPos = Camera.main.ScreenToWorldPoint(
+    new Vector3(cursorObj.transform.position.x, cursorObj.transform.position.y, Camera.main.nearClipPlane + 1f)
+);
+            HoldingCake.transform.position = worldPos;
+        }
+
         //print(rectTransform.position);
     }
 
+    void DrawRay()
+    {
+        if (HoldingCake == null)
+        {
+            
+            return;
+        }
+
+        
+        // 1. StartPos 계산
+        Vector3 startPos = Camera.main.ScreenToWorldPoint(cursorObj.transform.position);
+        startPos.z = 0f; // 2D 환경에서 Z 좌표 고정
+
+        // 2. Raycast 설정
+        Vector2 direction = Vector2.down; // Y축 -방향
+        float maxDistance = 100f; // 레이 최대 거리
+        int layerMask = LayerMask.GetMask("Ground", "Cake"); // Ground와 Cake 레이어
+
+        RaycastHit2D hit = Physics2D.Raycast(startPos, direction, maxDistance, layerMask);
+
+        Vector3 endPos = startPos + (Vector3)(direction * maxDistance); // 충돌 없을 경우 기본 endPos
+
+        // 3. 레이캐스트 결과 확인
+        if (hit.collider != null)
+        {
+            endPos = hit.point; // 충돌 지점으로 endPos 설정
+        }
+
+        // 4. LineRenderer를 사용해 선 그리기
+        lineRenderer.positionCount = 2; // 두 점으로 선 설정
+        lineRenderer.SetPosition(0, startPos); // 시작점
+        lineRenderer.SetPosition(1, endPos); // 끝점
+    }
 }
