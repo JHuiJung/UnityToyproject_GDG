@@ -79,3 +79,6 @@ crashlytics-build.properties
 
 # env
 /DiscordBot/.env
+
+# discord token
+/DiscordBot/discordbot-444517-5f38a99c735f.json
