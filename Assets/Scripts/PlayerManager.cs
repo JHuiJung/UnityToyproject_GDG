@@ -29,13 +29,52 @@ public class PlayerManager : MonoBehaviour
 
     private void Update()
     {
-
-        PlayerInput();
+        switch (GameManager.Inst.cameraType)
+        {
+            case CameraType.Drop:
+                PlayerDropInput();
+                break;
+            case CameraType.Search:
+                PlayerSearchInput();
+                break;
+        }
+        
         DrawRay();
     }
-
-    void PlayerInput()
+    void PlayerSearchInput()
     {
+        // 드랍으로 변경
+        if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Space)
+            || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            cursorObj.SetActive(true);
+            GameManager.Inst.SwitchCamera(CameraType.Drop);
+            UIManager.Inst.UpdateModeIcon();
+            return;
+        }
+
+        if(Input.GetKey(KeyCode.UpArrow))
+        {
+            GameManager.Inst.SearchCameraMove(Vector3.up);
+            print(2);
+        }
+
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            GameManager.Inst.SearchCameraMove(Vector3.down);
+        }
+
+    }
+    void PlayerDropInput()
+    {
+        // 탐색 모드로 변경
+        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            cursorObj.SetActive(false);
+            GameManager.Inst.SwitchCamera(CameraType.Search);
+            UIManager.Inst.UpdateModeIcon();
+            return;
+        }
 
         // 왼쪽이동
         if (Input.GetKey(KeyCode.LeftArrow))
@@ -169,7 +208,7 @@ public class PlayerManager : MonoBehaviour
 
         
         // 1. StartPos 계산
-        Vector3 startPos = Camera.main.ScreenToWorldPoint(cursorObj.transform.position);
+        Vector3 startPos = HoldingCake.transform.position;
         startPos.z = 0f; // 2D 환경에서 Z 좌표 고정
 
         // 2. Raycast 설정
