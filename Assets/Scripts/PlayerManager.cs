@@ -56,7 +56,7 @@ public class PlayerManager : MonoBehaviour
         if(Input.GetKey(KeyCode.UpArrow))
         {
             GameManager.Inst.SearchCameraMove(Vector3.up);
-            print(2);
+            //print(2);
         }
 
         if (Input.GetKey(KeyCode.DownArrow))
@@ -228,7 +228,7 @@ public class PlayerManager : MonoBehaviour
 
         // 4. LineRenderer를 사용해 선 그리기
         lineRenderer.positionCount = 2; // 두 점으로 선 설정
-        lineRenderer.SetPosition(0, startPos); // 시작점
-        lineRenderer.SetPosition(1, endPos); // 끝점
+        lineRenderer.SetPosition(0, endPos); // 시작점
+        lineRenderer.SetPosition(1, startPos); // 끝점
     }
 }
