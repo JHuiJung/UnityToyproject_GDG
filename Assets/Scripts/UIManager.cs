@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using DG.Tweening;
 
 public class UIManager : MonoBehaviour
 {
@@ -37,6 +38,9 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     GameObject Obj_SearchMode;
+
+    [SerializeField, Space(10), Header("Token")]
+    GameObject Icon_Token;
 
     private void FixedUpdate()
     {
@@ -75,5 +79,10 @@ public class UIManager : MonoBehaviour
 
 
         txt_CurrentHeight.text = height.ToString("F2") + "m";
+    }
+
+    public void UpdateToken()
+    {
+        Icon_Token.GetComponent<RectTransform>().DOPunchScale(new Vector3(0f,0.5f,0f), 0.5f).SetEase(Ease.InOutQuad);
     }
 }

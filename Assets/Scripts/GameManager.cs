@@ -23,6 +23,9 @@ public class GameManager : MonoBehaviour
     CameraType _cameraType = CameraType.Drop;
     public CameraType cameraType { get { return _cameraType; } private set { _cameraType = value; } }
 
+    [SerializeField]
+    Vector2 minMax_CameraY = Vector2.zero;
+
     // 싱글톤 인스턴스
     public static GameManager Inst { get; private set; }
 
@@ -128,14 +131,14 @@ public class GameManager : MonoBehaviour
 
         //이동 범위 4.5 ~ 최대 높이
 
-        if (camPos.y + moveVec.y * searchCameraSpeed * Time.deltaTime < 4.5f)
+        if (camPos.y + moveVec.y * searchCameraSpeed * Time.deltaTime < minMax_CameraY.x)
         {
-            searchCamera.transform.position = Vector3.up * 4.5f + Vector3.back * 10f;
+            searchCamera.transform.position = Vector3.up * minMax_CameraY.x + Vector3.back * 10f;
             return;
         }
-        if (camPos.y + moveVec.y * searchCameraSpeed * Time.deltaTime > 110f)
+        if (camPos.y + moveVec.y * searchCameraSpeed * Time.deltaTime > minMax_CameraY.y)
         {
-            searchCamera.transform.position = Vector3.up * UIManager.Inst.peakHeight + Vector3.back*10f;
+            searchCamera.transform.position = Vector3.up * minMax_CameraY.y + Vector3.back*10f;
             return;
         }
 

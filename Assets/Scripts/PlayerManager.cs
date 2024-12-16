@@ -126,7 +126,7 @@ public class PlayerManager : MonoBehaviour
     new Vector3(cursorObj.transform.position.x, cursorObj.transform.position.y, Camera.main.nearClipPlane + 1f)
 );
         
-
+        UIManager.Inst.UpdateToken();
         HoldingCake = Instantiate(cakeList.GetCakeInfoRandomByWeight().cakeObj);
         HoldingCake.transform.position = worldPos;
         lineRenderer.enabled = true;
