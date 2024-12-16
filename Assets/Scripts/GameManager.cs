@@ -24,7 +24,8 @@ public class GameManager : MonoBehaviour
     public CameraType cameraType { get { return _cameraType; } private set { _cameraType = value; } }
 
     [SerializeField]
-    Vector2 minMax_CameraY = Vector2.zero;
+    Vector2 _minMax_CameraY = Vector2.zero;
+    public Vector2 minMax_CameraY { get { return _minMax_CameraY; } private set { _minMax_CameraY = value; } }
 
     // ΩÃ±€≈Ê ¿ŒΩ∫≈œΩ∫
     public static GameManager Inst { get; private set; }

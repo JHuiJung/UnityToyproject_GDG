@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,6 +27,9 @@ public class PlayerManager : MonoBehaviour
 
     [Space(10),SerializeField, Header("CakeList")]
     CakeList cakeList;
+
+    [Space(10), SerializeField, Header("Particles")]
+    public List<GameObject> particlePrefabs; // 파티클 프리팹 리스트
 
     private void Update()
     {
@@ -126,10 +130,76 @@ public class PlayerManager : MonoBehaviour
     new Vector3(cursorObj.transform.position.x, cursorObj.transform.position.y, Camera.main.nearClipPlane + 1f)
 );
         
+        // 토큰 업데이트
         UIManager.Inst.UpdateToken();
-        HoldingCake = Instantiate(cakeList.GetCakeInfoRandomByWeight().cakeObj);
+        CakeInfo newCake = cakeList.GetCakeInfoRandomByWeight();
+
+        //파티클
+        PlayParticleByCakeType(newCake.cakeType);
+
+        // 생성
+        HoldingCake = Instantiate(newCake.cakeObj);
+
         HoldingCake.transform.position = worldPos;
+        HoldingCake.transform.GetChild(0).DOPunchScale(Vector3.up*0.25f, 0.5f).SetEase(Ease.InOutQuad);
+        
         lineRenderer.enabled = true;
+    }
+
+    public void PlayParticleByCakeType(CakeType cakeType)
+    {
+        if (particlePrefabs.Count == 0)
+            return;
+
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(
+    new Vector3(cursorObj.transform.position.x, cursorObj.transform.position.y, Camera.main.nearClipPlane + 1f)
+);
+
+        GameObject particleInstance;
+
+        switch (cakeType) 
+        {
+            case CakeType.choco:
+                particleInstance = Instantiate(particlePrefabs[0], worldPos, Quaternion.identity);
+                break;
+            case CakeType.Yellow:
+                particleInstance = Instantiate(particlePrefabs[1], worldPos, Quaternion.identity);
+                break;
+            case CakeType.Red:
+                particleInstance = Instantiate(particlePrefabs[2], worldPos, Quaternion.identity);
+                break;
+            case CakeType.Blue:
+                particleInstance = Instantiate(particlePrefabs[3], worldPos, Quaternion.identity);
+                break;
+            case CakeType.Rainbow:
+                particleInstance = Instantiate(particlePrefabs[4], new Vector3(0f, worldPos.y, -1f) , Quaternion.identity);
+                break;
+            default:
+                particleInstance = Instantiate(particlePrefabs[0], worldPos, Quaternion.identity);
+                break;
+        }
+
+
+        ParticleSystem particleSystem = particleInstance.GetComponent<ParticleSystem>();
+        if (particleSystem != null)
+        {
+            StartCoroutine(DestroyAfterLifetime(particleInstance, particleSystem));
+        }
+        else
+        {
+            Debug.LogWarning("Assigned prefab does not have a ParticleSystem component!");
+            Destroy(particleInstance);
+        }
+
+    }
+
+    private IEnumerator DestroyAfterLifetime(GameObject particleInstance, ParticleSystem particleSystem)
+    {
+        // 파티클 실행이 끝날 때까지 대기
+        yield return new WaitWhile(() => particleSystem.IsAlive(true));
+
+        // 파티클 오브젝트 삭제
+        Destroy(particleInstance);
     }
 
     public void DropCake()

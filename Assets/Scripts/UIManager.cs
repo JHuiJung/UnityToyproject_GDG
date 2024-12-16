@@ -42,9 +42,20 @@ public class UIManager : MonoBehaviour
     [SerializeField, Space(10), Header("Token")]
     GameObject Icon_Token;
 
+    [SerializeField, Space(10), Header("Minimap")]
+    GameObject Area_MinimapCam;
+
     private void FixedUpdate()
     {
         UpdateHeight();
+        MiniMapUI();
+    }
+
+    void MiniMapUI()
+    {
+        float normalized = Mathf.InverseLerp(GameManager.Inst.minMax_CameraY.x, GameManager.Inst.minMax_CameraY.y, Camera.main.transform.position.y);
+        float normalizedValue = Mathf.Lerp(-180f, 180f, normalized);
+        Area_MinimapCam.GetComponent<RectTransform>().anchoredPosition = Vector3.up * normalizedValue;
     }
 
     public void UpdateModeIcon()
