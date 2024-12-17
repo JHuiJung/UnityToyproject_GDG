@@ -150,8 +150,8 @@ Transform:
   m_GameObject: {fileID: 19316937}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10, y: 62.5, z: 0}
-  m_LocalScale: {x: 3, y: 125, z: 1}
+  m_LocalPosition: {x: -10.5, y: 62.5, z: 0}
+  m_LocalScale: {x: 5, y: 125, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1148598654}
@@ -2212,8 +2212,8 @@ Transform:
   m_GameObject: {fileID: 333637569}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10, y: 62.5, z: 0}
-  m_LocalScale: {x: 3, y: 125, z: 1}
+  m_LocalPosition: {x: 10.5, y: 62.5, z: 0}
+  m_LocalScale: {x: 5, y: 125, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1148598654}
@@ -7398,7 +7398,6 @@ MonoBehaviour:
   cursorObj: {fileID: 1752804429}
   cursorSpeed: 300
   rotateSpeed: 120
-  boundPos: {x: 100, y: 1180}
   _HoldingCake: {fileID: 0}
   lineRenderer: {fileID: 1587834130}
   cakeList: {fileID: 11400000, guid: ecfbf338a949fba439a52ab4ca0a5c3a, type: 2}

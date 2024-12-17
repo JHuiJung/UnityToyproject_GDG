@@ -16,8 +16,8 @@ public class PlayerManager : MonoBehaviour
     [SerializeField]
     float rotateSpeed = 60f;
 
-    [SerializeField]
-    Vector2 boundPos = Vector2.one; // 커서 범위 제한
+    //[SerializeField]
+    //Vector2 boundPos = Vector2.one; // 커서 범위 제한
 
     //장전된 케이크
     [SerializeField]
@@ -247,11 +247,14 @@ public class PlayerManager : MonoBehaviour
 
         RectTransform rectTransform = cursorObj.GetComponent<RectTransform>();
 
+        float minBound = Screen.width*0.05f;
+        float maxBound = Screen.width * 0.95f;
+
         if (isMoveLeft) { 
             //왼쪽으로 이동
 
             // 커서가 범위를 넘지 않게 조정
-            if(rectTransform.position.x - cursorSpeed*Time.deltaTime > boundPos.x)
+            if(rectTransform.position.x - cursorSpeed*Time.deltaTime > minBound)
             {
                 rectTransform.position += Vector3.left * cursorSpeed * Time.deltaTime;
                 
@@ -264,7 +267,7 @@ public class PlayerManager : MonoBehaviour
 
 
             // 커서가 범위를 넘지 않게 조정
-            if (rectTransform.position.x + cursorSpeed * Time.deltaTime < boundPos.y)
+            if (rectTransform.position.x + cursorSpeed * Time.deltaTime < maxBound)
             {
                 rectTransform.position += Vector3.right * cursorSpeed * Time.deltaTime;
             }
