@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Cake : MonoBehaviour
 {
-
+    public int cakeNumber = 0;
     public bool isGound = false;
 
     Rigidbody2D rb2D;
-    private void Start()
+    private void Awake()
     {
         rb2D = GetComponent<Rigidbody2D>();
     }
@@ -24,5 +24,13 @@ public class Cake : MonoBehaviour
 
         if (!isGound)
             isGound = true;
+    }
+
+    public void Setup(bool isGround)
+    {
+        if(isGround)
+        {
+            rb2D.simulated = true;
+        }
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
+    public static PlayerManager Inst { get; private set; }
 
     [SerializeField]
     GameObject cursorObj; // 커서 오브젝트
@@ -20,7 +21,8 @@ public class PlayerManager : MonoBehaviour
 
     //장전된 케이크
     [SerializeField]
-    GameObject HoldingCake;
+    GameObject _HoldingCake;
+    public GameObject HoldingCake { get { return _HoldingCake; } private set { _HoldingCake = value; } }
 
     [SerializeField,Space(10)]
     LineRenderer lineRenderer;
@@ -30,6 +32,18 @@ public class PlayerManager : MonoBehaviour
 
     [Space(10), SerializeField, Header("Particles")]
     public List<GameObject> particlePrefabs; // 파티클 프리팹 리스트
+
+    private void Awake()
+    {
+        // 싱글톤 초기화
+        if (Inst != null && Inst != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Inst = this;
+        DontDestroyOnLoad(gameObject);
+    }
 
     private void Update()
     {
@@ -139,7 +153,7 @@ public class PlayerManager : MonoBehaviour
 
         // 생성
         HoldingCake = Instantiate(newCake.cakeObj);
-
+        HoldingCake.GetComponent<Cake>().cakeNumber = newCake.cakeNumber;
         HoldingCake.transform.position = worldPos;
         HoldingCake.transform.GetChild(0).DOPunchScale(Vector3.up*0.25f, 0.5f).SetEase(Ease.InOutQuad);
         
@@ -301,4 +315,37 @@ public class PlayerManager : MonoBehaviour
         lineRenderer.SetPosition(0, endPos); // 시작점
         lineRenderer.SetPosition(1, startPos); // 끝점
     }
+
+    public void Setup(int HoldingCakeNumber = 0)
+    {
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(
+    new Vector3(cursorObj.transform.position.x, cursorObj.transform.position.y, Camera.main.nearClipPlane + 1f)
+);
+
+        // 생성
+        HoldingCake = Instantiate(cakeList.cakes[HoldingCakeNumber].cakeObj);
+        HoldingCake.GetComponent<Cake>().cakeNumber = HoldingCakeNumber;
+        HoldingCake.transform.position = worldPos;
+        HoldingCake.transform.GetChild(0).DOPunchScale(Vector3.up * 0.25f, 0.5f).SetEase(Ease.InOutQuad);
+
+        print("실행됨");
+    }
+
+//    [ContextMenu("Setup")]
+//    public void SetupTest()
+//    {
+//        int HoldingCakeNumber = 0;
+
+//        Vector3 worldPos = Camera.main.ScreenToWorldPoint(
+//    new Vector3(cursorObj.transform.position.x, cursorObj.transform.position.y, Camera.main.nearClipPlane + 1f)
+//);
+
+//        // 생성
+//        HoldingCake = Instantiate(cakeList.cakes[HoldingCakeNumber].cakeObj);
+//        HoldingCake.GetComponent<Cake>().cakeNumber = HoldingCakeNumber;
+//        HoldingCake.transform.position = worldPos;
+//        HoldingCake.transform.GetChild(0).DOPunchScale(Vector3.up * 0.25f, 0.5f).SetEase(Ease.InOutQuad);
+
+//        print("실행됨");
+//    }
 }
