@@ -84,10 +84,10 @@ public class UIManager : MonoBehaviour
         {
             peakHeight = height;
             txt_PeakHeight.text = peakHeight.ToString("F2") + "m";
-            GameManager.Inst.UpdateCameraPosition(peakHeight);
+            //GameManager.Inst.UpdateCameraPosition(peakHeight);
         }
-            
 
+        GameManager.Inst.UpdateCameraPosition(height);
 
         txt_CurrentHeight.text = height.ToString("F2") + "m";
     }

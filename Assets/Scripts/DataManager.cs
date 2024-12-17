@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System;
 
 [System.Serializable]
 public class JsonData
@@ -13,10 +14,19 @@ public class JsonData
 [System.Serializable]
 public class CakeJsonInfo
 {
-    public int cakeNumber = 0;
-    public Vector3 cakePosition = Vector3.zero;
-    public Quaternion cakeRotation = Quaternion.identity;
-    public bool isGround = false;
+    public int N = 0;
+    //public Vector3 P = Vector3.zero;
+    public float x = 0f;
+    public float y = 0f;
+    public float z = 0f;
+
+    public float q = 0f;
+    public float w = 0f;
+    public float e = 0f;
+    public float r = 0f;
+
+    //public Quaternion R = Quaternion.identity;
+    public bool G = false;
 }
 
 public class DataManager : MonoBehaviour
@@ -68,15 +78,40 @@ public class DataManager : MonoBehaviour
 
                 CakeJsonInfo _jsonInfo = new CakeJsonInfo();
 
-                _jsonInfo.cakeNumber = cake.cakeNumber;
-                _jsonInfo.cakePosition = cake.transform.position;
-                _jsonInfo.cakeRotation = cake.transform.rotation;
-                _jsonInfo.isGround = cake.isGound;
+                float px = (float) Math.Round(cake.transform.position.x, 4);
+                float py = (float)Math.Round(cake.transform.position.y, 4);
+                float pz = (float)Math.Round(cake.transform.position.z, 4);
+                
+                Vector3 pos = new Vector3(px,py,pz);
+
+                float rx = (float)Math.Round(cake.transform.rotation.x, 4);
+                float ry = (float)Math.Round(cake.transform.rotation.y, 4);
+                float rz = (float)Math.Round(cake.transform.rotation.z, 4);
+                float rw = (float)Math.Round(cake.transform.rotation.z, 4);
+
+                Quaternion rot = new Quaternion(rx, ry, rz, rw);
+                print(px);
+                print(rz);
+                _jsonInfo.N = cake.cakeNumber;
+                _jsonInfo.G = cake.isGound;
+
+                _jsonInfo.x = px;
+                _jsonInfo.y = py;
+                _jsonInfo.z = pz;
+
+                _jsonInfo.q = rx;
+                _jsonInfo.w = ry;
+                _jsonInfo.e = rz;
+                _jsonInfo.r = rw;
+
+                //_jsonInfo.P = pos;
+                //_jsonInfo.R = rot;
+                //
 
                 _saveData.CakeJsonList.Add(_jsonInfo);
             }
 
-            _saveData.CakeJsonList.Sort((a, b) => a.cakePosition.y.CompareTo(b.cakePosition.y));
+            _saveData.CakeJsonList.Sort((a, b) => a.y.CompareTo(b.y));
         }
         else
         {
@@ -128,20 +163,23 @@ public class DataManager : MonoBehaviour
             foreach (CakeJsonInfo cakeInfo in loadedData.CakeJsonList)
             {
                 // 새로운 GameObject 생성
-                GameObject cakeObject = Instantiate(CakeList.cakes[cakeInfo.cakeNumber].cakeObj);
+                GameObject cakeObject = Instantiate(CakeList.cakes[cakeInfo.N].cakeObj);
 
                 // Cake 스크립트 추가
                 Cake cakeComponent = cakeObject.GetComponent<Cake>();
 
                 // 속성 설정
-                cakeComponent.cakeNumber = cakeInfo.cakeNumber;
-                cakeComponent.isGound = cakeInfo.isGround;
+                cakeComponent.cakeNumber = cakeInfo.N;
+                cakeComponent.isGound = cakeInfo.G;
+
+                Vector3 pos = new Vector3(cakeInfo.x, cakeInfo.y, cakeInfo.z);
+                Quaternion rot = new Quaternion(cakeInfo.q, cakeInfo.w, cakeInfo.e, cakeInfo.r);
 
                 // 위치와 회전 설정
-                cakeObject.transform.position = cakeInfo.cakePosition;
-                cakeObject.transform.rotation = cakeInfo.cakeRotation;
+                cakeObject.transform.position = pos;
+                cakeObject.transform.rotation = rot;
 
-                cakeComponent.Setup(cakeInfo.isGround);
+                cakeComponent.Setup(cakeInfo.G);
                 //Debug.Log($"Loaded Cake: {cakeInfo.cakeNumber} at {cakeInfo.cakePosition}");
             }
 
