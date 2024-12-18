@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DarkTonic.MasterAudio;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -175,18 +176,23 @@ public class PlayerManager : MonoBehaviour
         {
             case CakeType.choco:
                 particleInstance = Instantiate(particlePrefabs[0], worldPos, Quaternion.identity);
+                MasterAudio.PlaySound("reload choco");
                 break;
             case CakeType.Yellow:
                 particleInstance = Instantiate(particlePrefabs[1], worldPos, Quaternion.identity);
+                MasterAudio.PlaySound("reload choco");
                 break;
             case CakeType.Red:
                 particleInstance = Instantiate(particlePrefabs[2], worldPos, Quaternion.identity);
+                MasterAudio.PlaySound("reload red");
                 break;
             case CakeType.Blue:
                 particleInstance = Instantiate(particlePrefabs[3], worldPos, Quaternion.identity);
+                MasterAudio.PlaySound("reload red");
                 break;
             case CakeType.Rainbow:
                 particleInstance = Instantiate(particlePrefabs[4], new Vector3(0f, worldPos.y, -1f) , Quaternion.identity);
+                MasterAudio.PlaySound("reload rainbow");
                 break;
             default:
                 particleInstance = Instantiate(particlePrefabs[0], worldPos, Quaternion.identity);

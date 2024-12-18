@@ -4,9 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
+using DarkTonic.MasterAudio;
 
 public class BTN_Animation : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    [SerializeField]
+    GameObject targetObj;
+
     [SerializeField]
     Vector3 targetScale = Vector3.one;
 
@@ -20,12 +24,19 @@ public class BTN_Animation : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        this.GetComponent<RectTransform>().DOScale(targetScale, 0.125f);
+        if (targetObj == null)
+            return;
+
+        targetObj.GetComponent<RectTransform>().DOScale(targetScale, 0.125f);
+
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        this.GetComponent<RectTransform>().DOScale(Vector3.one, 0.125f);
+        if (targetObj == null)
+            return;
+
+        targetObj.GetComponent<RectTransform>().DOScale(Vector3.one, 0.125f);
     }
 
     public void Toggle()
