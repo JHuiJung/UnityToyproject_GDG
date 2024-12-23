@@ -1,5 +1,6 @@
 using System.Linq;
 using UnityEngine;
+using DarkTonic.MasterAudio;
 
 public enum CameraType
 {
@@ -44,7 +45,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-
+        MasterAudio.PlaySound("BGM_Game");
     }
 
     [ContextMenu("GetHighestCakeHeight")]

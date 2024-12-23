@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
+using DarkTonic.MasterAudio;
 
 public class UIManager : MonoBehaviour
 {
@@ -44,6 +45,9 @@ public class UIManager : MonoBehaviour
 
     [SerializeField, Space(10), Header("Minimap")]
     GameObject Area_MinimapCam;
+
+    [SerializeField, Space(10), Header("Sound")]
+    Slider Slide_Sound;
 
     private void FixedUpdate()
     {
@@ -95,5 +99,13 @@ public class UIManager : MonoBehaviour
     public void UpdateToken()
     {
         Icon_Token.GetComponent<RectTransform>().DOPunchScale(new Vector3(0f,0.5f,0f), 0.5f).SetEase(Ease.InOutQuad);
+    }
+
+    public void UpdateSoundValue()
+    {
+        float value = Slide_Sound.value;
+
+        MasterAudio.SetBusVolumeByName("SFX", value);
+        MasterAudio.SetBusVolumeByName("BGM", value);
     }
 }
