@@ -63,14 +63,14 @@ public class PlayerManager : MonoBehaviour
     void PlayerSearchInput()
     {
         // 드랍으로 변경
-        if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Space)
-            || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            cursorObj.SetActive(true);
-            GameManager.Inst.SwitchCamera(CameraType.Drop);
-            UIManager.Inst.UpdateModeIcon();
-            return;
-        }
+        //if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Space)
+        //    || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow))
+        //{
+        //    cursorObj.SetActive(true);
+        //    GameManager.Inst.SwitchCamera(CameraType.Drop);
+        //    UIManager.Inst.UpdateModeIcon();
+        //    return;
+        //}
 
         if(Input.GetKey(KeyCode.UpArrow))
         {
@@ -87,13 +87,13 @@ public class PlayerManager : MonoBehaviour
     void PlayerDropInput()
     {
         // 탐색 모드로 변경
-        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            cursorObj.SetActive(false);
-            GameManager.Inst.SwitchCamera(CameraType.Search);
-            UIManager.Inst.UpdateModeIcon();
-            return;
-        }
+        //if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow))
+        //{
+        //    cursorObj.SetActive(false);
+        //    GameManager.Inst.SwitchCamera(CameraType.Search);
+        //    UIManager.Inst.UpdateModeIcon();
+        //    return;
+        //}
 
         // 왼쪽이동
         if (Input.GetKey(KeyCode.LeftArrow))
@@ -156,6 +156,8 @@ public class PlayerManager : MonoBehaviour
         HoldingCake = Instantiate(newCake.cakeObj);
         HoldingCake.GetComponent<Cake>().cakeNumber = newCake.cakeNumber;
         HoldingCake.transform.position = worldPos;
+        //HoldingCake.transform.rotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
+        //HoldingCake.transform.rotation = new Quaternion(0f,0f,Random.Range(0f,360f),0f);
         HoldingCake.transform.GetChild(0).DOPunchScale(Vector3.up*0.25f, 0.5f).SetEase(Ease.InOutQuad);
         
         lineRenderer.enabled = true;

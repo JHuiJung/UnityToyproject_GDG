@@ -34,11 +34,11 @@ public class UIManager : MonoBehaviour
     public float currentHeight = 0f;
     public float peakHeight = 0f;
 
-    [SerializeField, Space(10), Header("Mode")]
-    GameObject Obj_DropMode;
+    //[SerializeField, Space(10), Header("Mode")]
+    //GameObject Obj_DropMode;
 
-    [SerializeField]
-    GameObject Obj_SearchMode;
+    //[SerializeField]
+    //GameObject Obj_SearchMode;
 
     [SerializeField, Space(10), Header("Token")]
     GameObject Icon_Token;
@@ -62,20 +62,20 @@ public class UIManager : MonoBehaviour
         Area_MinimapCam.GetComponent<RectTransform>().anchoredPosition = Vector3.up * normalizedValue;
     }
 
-    public void UpdateModeIcon()
-    {
-        switch (GameManager.Inst.cameraType)
-        {
-            case CameraType.Drop:
-                Obj_DropMode.SetActive(true);
-                Obj_SearchMode.SetActive(false);
-                break;
-            case CameraType.Search:
-                Obj_DropMode.SetActive(false);
-                Obj_SearchMode.SetActive(true);
-                break;
-        }
-    }
+    //public void UpdateModeIcon()
+    //{
+    //    switch (GameManager.Inst.cameraType)
+    //    {
+    //        case CameraType.Drop:
+    //            Obj_DropMode.SetActive(true);
+    //            Obj_SearchMode.SetActive(false);
+    //            break;
+    //        case CameraType.Search:
+    //            Obj_DropMode.SetActive(false);
+    //            Obj_SearchMode.SetActive(true);
+    //            break;
+    //    }
+    //}
     public void UpdateHeight()
     {
         float height = GameManager.Inst.GetHighestCakeHeight();
