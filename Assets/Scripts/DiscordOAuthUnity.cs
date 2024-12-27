@@ -2,100 +2,121 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 using TMPro;
+using System;
 
 public class DiscordOAuthUnity : MonoBehaviour
 {
-    public TMP_Text txt; // 결과 표시용 텍스트 UI
-    private string serverUrl = "http://localhost:3000/getUserInfo"; // Node.js 서버 주소
+    [SerializeField]
+    TMP_Text txt_debug;
 
-    public void FetchUserInfo()
+    [SerializeField]
+    TMP_Text txt_good;
+    [SerializeField]
+    TMP_Text txt_sub;
+
+
+    private const string CLIENT_ID = "1319574653697658890";
+    private const string CLIENT_SECRET = "GalvUlVOeL4Bw0zYLTIT9MLSmAL6HQ5P";
+    private const string REDIRECT_URI = "https://jhuijung.github.io/UnityToyproject_GDG_HostRepo/";
+
+    void Start()
     {
-        string code = GetCode();
+        
+    }
+
+    public void BTNS()
+    {
+        string url = Application.absoluteURL;
+        string code = GetCodeFromURL(url);
 
         if (!string.IsNullOrEmpty(code))
         {
-            StartCoroutine(SendCodeToServer(code));
+            Debug.Log("Authorization Code: " + code);
+            txt_good.text = "Authorization Code: " + code;
+            StartCoroutine(RequestAccessToken(code));
         }
         else
         {
-            Debug.LogError("Code is null or empty. Cannot fetch user info.");
-            txt.text = "Error: Code not found in URL.";
+            Debug.Log("No Authorization Code found in URL.");
+            txt_debug.text = "No Authorization Code found in URL.";
         }
     }
 
-    private string GetCode()
+    string GetCodeFromURL(string url)
     {
-        string queryKey = "code";
-        string codeValue = GetQueryValue(queryKey);
-
-        if (!string.IsNullOrEmpty(codeValue))
-        {
-            Debug.Log($"Returned Code: {codeValue}");
-            return codeValue;
-        }
-        else
-        {
-            Debug.LogError("Code value not found in URL.");
-            return null;
-        }
+        Uri uri = new Uri(url);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        return query.Get("code");
     }
 
-    private string GetQueryValue(string key)
+    IEnumerator RequestAccessToken(string code)
     {
-        string url = Application.absoluteURL;
+        string tokenUrl = "https://discord.com/api/oauth2/token";
+        WWWForm form = new WWWForm();
+        form.AddField("client_id", CLIENT_ID);
+        form.AddField("client_secret", CLIENT_SECRET);
+        form.AddField("grant_type", "authorization_code");
+        form.AddField("code", code);
+        form.AddField("redirect_uri", REDIRECT_URI);
 
-        if (string.IsNullOrEmpty(url) || !url.Contains("?"))
+        using (UnityWebRequest www = UnityWebRequest.Post(tokenUrl, form))
         {
-            Debug.LogError("Invalid URL or no query string.");
-            return null;
-        }
-
-        try
-        {
-            int queryStartIndex = url.IndexOf('?');
-            string queryString = url.Substring(queryStartIndex + 1);
-
-            string[] parameters = queryString.Split('&');
-            foreach (string param in parameters)
-            {
-                string[] keyValue = param.Split('=');
-                if (keyValue.Length == 2 && keyValue[0] == key)
-                {
-                    return keyValue[1];
-                }
-            }
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogError($"Error parsing URL: {ex.Message}");
-        }
-
-        return null;
-    }
-
-    private IEnumerator SendCodeToServer(string code)
-    {
-        // 서버로 보낼 데이터 준비
-        string json = $"{{\"code\":\"{code}\"}}"; // 명시적 JSON 문자열 생성
-
-        using (UnityWebRequest www = new UnityWebRequest(serverUrl, "POST"))
-        {
-            www.SetRequestHeader("Content-Type", "application/json");
-            www.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(json));
-            www.downloadHandler = new DownloadHandlerBuffer();
-
             yield return www.SendWebRequest();
 
             if (www.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log($"User Info: {www.downloadHandler.text}");
-                txt.text = www.downloadHandler.text; // 결과를 UI에 표시
+                Debug.Log("Access Token Response: " + www.downloadHandler.text);
+                txt_sub.text = www.downloadHandler.text;
+                string accessToken = ExtractAccessToken(www.downloadHandler.text);
+                StartCoroutine(RequestUserInfo(accessToken));
             }
             else
             {
-                Debug.LogError($"Error: {www.error}");
-                txt.text = "Error: Failed to fetch user info.";
+                Debug.LogError("Token Request Error: " + www.error);
             }
         }
     }
+
+    string ExtractAccessToken(string jsonResponse)
+    {
+        // 간단한 JSON 파싱 (Unity에서는 JsonUtility를 사용 가능)
+        var response = JsonUtility.FromJson<DiscordTokenResponse>(jsonResponse);
+        return response.access_token;
+    }
+
+    IEnumerator RequestUserInfo(string accessToken)
+    {
+        string userInfoUrl = "https://discord.com/api/users/@me";
+
+        UnityWebRequest www = UnityWebRequest.Get(userInfoUrl);
+        www.SetRequestHeader("Authorization", "Bearer " + accessToken);
+
+        yield return www.SendWebRequest();
+
+        if (www.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log("User Info: " + www.downloadHandler.text);
+            txt_good.text = www.downloadHandler.text;
+        }
+        else
+        {
+            Debug.LogError("User Info Request Error: " + www.error);
+        }
+    }
 }
+
+[Serializable]
+public class DiscordTokenResponse
+{
+    public string access_token;
+    public string token_type;
+    public string expires_in;
+    public string refresh_token;
+    public string scope;
+
+    // 사용자 정보 필드 추가
+    public string username;
+    public string id;
+}
+
+
