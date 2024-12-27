@@ -287,7 +287,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Txt_Username: {fileID: 1381740780}
-  Txt_JsonResponse: {fileID: 671582314}
 --- !u!4 &338491877
 Transform:
   m_ObjectHideFlags: 0
@@ -1134,7 +1133,7 @@ GameObject:
   - component: {fileID: 1381740781}
   - component: {fileID: 1381740780}
   m_Layer: 5
-  m_Name: Txt_Discord
+  m_Name: Txt_Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1377,7 +1376,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 338491876}
         m_TargetAssemblyTypeName: DiscordManager, Assembly-CSharp
-        m_MethodName: BTNTEST
+        m_MethodName: BTNS
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -1,22 +1,25 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
+using TMPro;
 using System;
+using UnityEngine.SceneManagement;
+
 
 public class DiscordManager : MonoBehaviour
 {
-    private string clientId = "1319574653697658890"; // Discord 클라이언트 ID
-    private string redirectUri = "https://jhuijung.github.io/UnityToyproject_GDG_HostRepo/"; // 리디렉션 URI
-    private string authUrl;
-
     public TMP_Text Txt_Username;
-    public TMP_Text Txt_JsonResponse;
+    //public TMP_Text Txt_JsonResponse;
 
-    private string userName = "none";
+    private string _userName = "none";
+    public string userName { get { return _userName; } private set { _userName = value; } }
+
+    private string _userId = "none";
+    public string userId { get { return _userId; } private set { _userId = value; } }
+
+    private const string CLIENT_ID = "1319574653697658890";
+    private const string CLIENT_SECRET = "GalvUlVOeL4Bw0zYLTIT9MLSmAL6HQ5P";
+    private const string REDIRECT_URI = "https://jhuijung.github.io/UnityToyproject_GDG_HostRepo/";
 
     // 싱글톤 인스턴스
     public static DiscordManager Inst { get; private set; }
@@ -33,74 +36,127 @@ public class DiscordManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    void Start()
+    private void Start()
     {
-        // Discord OAuth2 인증 URL 생성
-        //authUrl = $"https://discord.com/api/oauth2/authorize?client_id={clientId}&redirect_uri={redirectUri}&response_type=code&scope=identify";
-        //OnLoginButtonClicked();
+        BTNS();
     }
 
-    public void BTNTEST()
+    public void BTNS()
     {
-        print(Application.absoluteURL);
-        Txt_Username.text = Application.absoluteURL;
+        string url = Application.absoluteURL;
+        string code = GetCodeFromURL(url);
 
-        //if( tmp != "-1")
-        //{
-        //    StartCoroutine(test(tmp));
-        //}
-        //else
-        //{
-        //    Txt_JsonResponse.text = "URL Link No read";
-        //}
-
-        string queryKey = "code";
-        string codeValue = GetQueryValue(queryKey);
-
-        // 값 출력
-        if (!string.IsNullOrEmpty(codeValue))
+        if (!string.IsNullOrEmpty(code))
         {
-            Debug.Log($"Returned Code: {codeValue}");
-            Txt_JsonResponse.text = codeValue;
+            Debug.Log("Authorization Code: " + code);
+            //txt_good.text = "Authorization Code: " + code;
+            StartCoroutine(RequestAccessToken(code));
         }
         else
         {
-            Debug.LogError("Code value not found in URL.");
+            Debug.LogError("No Authorization Code found in URL.");
+            //txt_debug.text = "No Authorization Code found in URL.";
         }
     }
 
-    string GetQueryValue(string key)
+    string GetCodeFromURL(string url)
     {
-        string url = Application.absoluteURL;
+        Uri uri = new Uri(url);
 
-        if (string.IsNullOrEmpty(url) || !url.Contains("?"))
+        // Custom query string parsing for Unity WebGL
+        string query = uri.Query;
+        if (!string.IsNullOrEmpty(query) && query.StartsWith("?"))
         {
-            Debug.LogError("Invalid URL or no query string.");
-            return null;
-        }
-
-        try
-        {
-            int queryStartIndex = url.IndexOf('?');
-            string queryString = url.Substring(queryStartIndex + 1);
-
-            string[] parameters = queryString.Split('&');
-            foreach (string param in parameters)
+            query = query.Substring(1); // Remove '?' at the start
+            string[] pairs = query.Split('&');
+            foreach (string pair in pairs)
             {
-                string[] keyValue = param.Split('=');
-                if (keyValue.Length == 2 && keyValue[0] == key)
+                string[] keyValue = pair.Split('=');
+                if (keyValue.Length == 2 && keyValue[0] == "code")
                 {
                     return keyValue[1];
                 }
             }
         }
-        catch (System.Exception ex)
-        {
-            Debug.LogError($"Error parsing URL: {ex.Message}");
-        }
-
-        return null;
+        return null; // No code found
     }
 
 
+    IEnumerator RequestAccessToken(string code)
+    {
+        string tokenUrl = "https://discord.com/api/oauth2/token";
+        WWWForm form = new WWWForm();
+        form.AddField("client_id", CLIENT_ID);
+        form.AddField("client_secret", CLIENT_SECRET);
+        form.AddField("grant_type", "authorization_code");
+        form.AddField("code", code);
+        form.AddField("redirect_uri", REDIRECT_URI);
+
+        using (UnityWebRequest www = UnityWebRequest.Post(tokenUrl, form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.result == UnityWebRequest.Result.Success)
+            {
+                Debug.Log("Access Token Response: " + www.downloadHandler.text);
+                //txt_sub.text = www.downloadHandler.text;
+
+                var tokenResponse = JsonUtility.FromJson<DiscordTokenResponse>(www.downloadHandler.text);
+                StartCoroutine(RequestUserInfo(tokenResponse.access_token));
+            }
+            else
+            {
+                Debug.LogError("Token Request Error: " + www.error);
+                //txt_debug.text = "Token Request Error: " + www.error;
+            }
+        }
+    }
+
+    IEnumerator RequestUserInfo(string accessToken)
+    {
+        string userInfoUrl = "https://discord.com/api/users/@me";
+
+        UnityWebRequest www = UnityWebRequest.Get(userInfoUrl);
+        www.SetRequestHeader("Authorization", "Bearer " + accessToken);
+
+        yield return www.SendWebRequest();
+
+        if (www.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log("User Info: " + www.downloadHandler.text);
+            //txt_good.text = www.downloadHandler.text;
+
+            var userInfo = JsonUtility.FromJson<DiscordUserInfo>(www.downloadHandler.text);
+
+            userId = userInfo.id;
+            userName = userInfo.username;
+            //txt_good.text = $"User: {userInfo.username} (ID: {userInfo.id})";
+            Txt_Username.text = userName;
+            SceneManager.LoadScene("GameScene");
+        }
+        else
+        {
+            Debug.LogError("User Info Request Error: " + www.error);
+            //txt_debug.text = "User Info Request Error: " + www.error;
+        }
+    }
+}
+
+[Serializable]
+public class DiscordTokenResponse
+{
+    public string access_token;
+    public string token_type;
+    public int expires_in;
+    public string refresh_token;
+    public string scope;
+}
+
+[Serializable]
+public class DiscordUserInfo
+{
+    public string id;          // 사용자 ID
+    public string username;    // 사용자 이름
+    public string discriminator; // 태그 번호
+    public string avatar;      // 아바타 정보
 }

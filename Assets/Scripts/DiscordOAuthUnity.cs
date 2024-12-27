@@ -6,23 +6,13 @@ using System;
 
 public class DiscordOAuthUnity : MonoBehaviour
 {
-    [SerializeField]
-    TMP_Text txt_debug;
-
-    [SerializeField]
-    TMP_Text txt_good;
-    [SerializeField]
-    TMP_Text txt_sub;
-
+    [SerializeField] private TMP_Text txt_debug;
+    [SerializeField] private TMP_Text txt_good;
+    [SerializeField] private TMP_Text txt_sub;
 
     private const string CLIENT_ID = "1319574653697658890";
     private const string CLIENT_SECRET = "GalvUlVOeL4Bw0zYLTIT9MLSmAL6HQ5P";
     private const string REDIRECT_URI = "https://jhuijung.github.io/UnityToyproject_GDG_HostRepo/";
-
-    void Start()
-    {
-        
-    }
 
     public void BTNS()
     {
@@ -45,9 +35,25 @@ public class DiscordOAuthUnity : MonoBehaviour
     string GetCodeFromURL(string url)
     {
         Uri uri = new Uri(url);
-        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
-        return query.Get("code");
+
+        // Custom query string parsing for Unity WebGL
+        string query = uri.Query;
+        if (!string.IsNullOrEmpty(query) && query.StartsWith("?"))
+        {
+            query = query.Substring(1); // Remove '?' at the start
+            string[] pairs = query.Split('&');
+            foreach (string pair in pairs)
+            {
+                string[] keyValue = pair.Split('=');
+                if (keyValue.Length == 2 && keyValue[0] == "code")
+                {
+                    return keyValue[1];
+                }
+            }
+        }
+        return null; // No code found
     }
+
 
     IEnumerator RequestAccessToken(string code)
     {
@@ -67,21 +73,16 @@ public class DiscordOAuthUnity : MonoBehaviour
             {
                 Debug.Log("Access Token Response: " + www.downloadHandler.text);
                 txt_sub.text = www.downloadHandler.text;
-                string accessToken = ExtractAccessToken(www.downloadHandler.text);
-                StartCoroutine(RequestUserInfo(accessToken));
+
+                var tokenResponse = JsonUtility.FromJson<DiscordTokenResponse>(www.downloadHandler.text);
+                StartCoroutine(RequestUserInfo(tokenResponse.access_token));
             }
             else
             {
                 Debug.LogError("Token Request Error: " + www.error);
+                txt_debug.text = "Token Request Error: " + www.error;
             }
         }
-    }
-
-    string ExtractAccessToken(string jsonResponse)
-    {
-        // 간단한 JSON 파싱 (Unity에서는 JsonUtility를 사용 가능)
-        var response = JsonUtility.FromJson<DiscordTokenResponse>(jsonResponse);
-        return response.access_token;
     }
 
     IEnumerator RequestUserInfo(string accessToken)
@@ -97,26 +98,33 @@ public class DiscordOAuthUnity : MonoBehaviour
         {
             Debug.Log("User Info: " + www.downloadHandler.text);
             txt_good.text = www.downloadHandler.text;
+
+            var userInfo = JsonUtility.FromJson<DiscordUserInfo>(www.downloadHandler.text);
+            txt_good.text = $"User: {userInfo.username} (ID: {userInfo.id})";
         }
         else
         {
             Debug.LogError("User Info Request Error: " + www.error);
+            txt_debug.text = "User Info Request Error: " + www.error;
         }
     }
 }
 
-[Serializable]
-public class DiscordTokenResponse
-{
-    public string access_token;
-    public string token_type;
-    public string expires_in;
-    public string refresh_token;
-    public string scope;
+//[Serializable]
+//public class DiscordTokenResponse
+//{
+//    public string access_token;
+//    public string token_type;
+//    public int expires_in;
+//    public string refresh_token;
+//    public string scope;
+//}
 
-    // 사용자 정보 필드 추가
-    public string username;
-    public string id;
-}
-
-
+//[Serializable]
+//public class DiscordUserInfo
+//{
+//    public string id;          // 사용자 ID
+//    public string username;    // 사용자 이름
+//    public string discriminator; // 태그 번호
+//    public string avatar;      // 아바타 정보
+//}
