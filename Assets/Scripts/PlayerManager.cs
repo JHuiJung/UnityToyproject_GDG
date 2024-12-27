@@ -108,13 +108,13 @@ public class PlayerManager : MonoBehaviour
         }
 
         // 좌 회전
-        if (Input.GetKey(KeyCode.Q))
+        if (Input.GetKey(KeyCode.A))
         {
             RotateHoldingCake(true);
         }
 
         // 우 회전
-        if (Input.GetKey(KeyCode.E))
+        if (Input.GetKey(KeyCode.D))
         {
             RotateHoldingCake(false);
         }
