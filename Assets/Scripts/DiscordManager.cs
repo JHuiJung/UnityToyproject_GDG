@@ -14,7 +14,7 @@ public class DiscordManager : MonoBehaviour
     private string _userName = "none";
     public string userName { get { return _userName; } private set { _userName = value; } }
 
-    private string _userId = "none";
+    private string _userId = "123";
     public string userId { get { return _userId; } private set { _userId = value; } }
 
     private const string CLIENT_ID = "1319574653697658890";

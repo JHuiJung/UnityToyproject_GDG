@@ -51,3 +51,15 @@ MonoBehaviour:
   Icon_Token: {fileID: 0}
   Area_MinimapCam: {fileID: 0}
   Slide_Sound: {fileID: 0}
+  Txt_RankerNames:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  Txt_RankerHeight:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

@@ -1,6 +1,8 @@
 using System.Linq;
 using UnityEngine;
 using DarkTonic.MasterAudio;
+using System.Collections;
+using DG.Tweening;
 
 public enum CameraType
 {
@@ -100,12 +102,23 @@ public class GameManager : MonoBehaviour
         return -1;
     }
 
-    public void UpdateCameraPosition(float peakCakeHight)
+    public void UpdateCameraPosition(float hight)
     {
-        if (peakCakeHight < 4.5f)
+        if (hight < 4.5f)
             return;
 
-        mainCamera.transform.position = new Vector3(0f,peakCakeHight,-10f);
+        mainCamera.transform.position = new Vector3(0f, hight, -10f);
+    }
+
+    public void UpdateCameraPositionDotween()
+    {
+        float hight = GetHighestCakeHeight();
+
+        if (hight < 4.5f)
+            return;
+
+        mainCamera.transform.DOMove(new Vector3(0f, hight, -10f),1f).SetEase(Ease.InOutQuad);
+        //mainCamera.transform.position = new Vector3(0f, hight, -10f);
     }
 
     public void SwitchCamera(CameraType cameraType)

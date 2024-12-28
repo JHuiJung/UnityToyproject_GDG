@@ -49,6 +49,15 @@ public class UIManager : MonoBehaviour
     [SerializeField, Space(10), Header("Sound")]
     Slider Slide_Sound;
 
+    [SerializeField, Space(10), Header("Ranking")]
+    List<TMP_Text> Txt_RankerNames;
+
+    [SerializeField]
+    List<TMP_Text> Txt_RankerHeight;
+
+    [SerializeField, Space(10), Header("InfoReload")]
+    GameObject Obj_infoReload;
+
     private void FixedUpdate()
     {
         UpdateHeight();
@@ -91,7 +100,7 @@ public class UIManager : MonoBehaviour
             //GameManager.Inst.UpdateCameraPosition(peakHeight);
         }
 
-        GameManager.Inst.UpdateCameraPosition(height);
+        //GameManager.Inst.UpdateCameraPosition(height);
 
         txt_CurrentHeight.text = height.ToString("F2") + "m";
     }
@@ -101,11 +110,29 @@ public class UIManager : MonoBehaviour
         Icon_Token.GetComponent<RectTransform>().DOPunchScale(new Vector3(0f,0.5f,0f), 0.5f).SetEase(Ease.InOutQuad);
     }
 
+    public void UpdateRanking(List<(string Name, float MaxHeight)> rankList)
+    {
+        print(rankList.Count);
+
+        for (int i = 0; i < rankList.Count; i++) 
+        {
+            Txt_RankerNames[i].text = rankList[i].Name;
+            Txt_RankerHeight[i].text = rankList[i].MaxHeight.ToString("F2") + "m";
+        }
+
+
+    }
+
     public void UpdateSoundValue()
     {
         float value = Slide_Sound.value;
 
         MasterAudio.SetBusVolumeByName("SFX", value);
         MasterAudio.SetBusVolumeByName("BGM", value);
+    }
+
+    public void UIToggle_InfoReload()
+    {
+        Obj_infoReload.GetComponent<BTN_Animation>().Toggle();
     }
 }

@@ -34,6 +34,9 @@ public class PlayerManager : MonoBehaviour
     [Space(10), SerializeField, Header("Particles")]
     public List<GameObject> particlePrefabs; // 파티클 프리팹 리스트
 
+
+    private bool isCanDropCake = true;
+
     private void Awake()
     {
         // 싱글톤 초기화
@@ -63,16 +66,16 @@ public class PlayerManager : MonoBehaviour
     void PlayerSearchInput()
     {
         // 드랍으로 변경
-        //if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Space)
-        //    || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow))
-        //{
-        //    cursorObj.SetActive(true);
-        //    GameManager.Inst.SwitchCamera(CameraType.Drop);
-        //    UIManager.Inst.UpdateModeIcon();
-        //    return;
-        //}
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Space)
+            || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            cursorObj.SetActive(true);
+            GameManager.Inst.SwitchCamera(CameraType.Drop);
+            //UIManager.Inst.UpdateModeIcon();
+            return;
+        }
 
-        if(Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKey(KeyCode.UpArrow))
         {
             GameManager.Inst.SearchCameraMove(Vector3.up);
             //print(2);
@@ -87,13 +90,13 @@ public class PlayerManager : MonoBehaviour
     void PlayerDropInput()
     {
         // 탐색 모드로 변경
-        //if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow))
-        //{
-        //    cursorObj.SetActive(false);
-        //    GameManager.Inst.SwitchCamera(CameraType.Search);
-        //    UIManager.Inst.UpdateModeIcon();
-        //    return;
-        //}
+        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            cursorObj.SetActive(false);
+            GameManager.Inst.SwitchCamera(CameraType.Search);
+            //UIManager.Inst.UpdateModeIcon();
+            return;
+        }
 
         // 왼쪽이동
         if (Input.GetKey(KeyCode.LeftArrow))
@@ -123,11 +126,15 @@ public class PlayerManager : MonoBehaviour
         // 케익 드랍
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            if (!isCanDropCake)
+                return;
+
 
             if (HoldingCake != null)
             {
                 // 장전 돼있을 때
-                DropCake();
+                
+                StartCoroutine(DropCake());
             }
             else
             {
@@ -224,11 +231,32 @@ public class PlayerManager : MonoBehaviour
         Destroy(particleInstance);
     }
 
-    public void DropCake()
+    public IEnumerator DropCake()
     {
+        // 드랍
+        isCanDropCake = false;
+
         HoldingCake.GetComponent<Cake>().Drop();
         lineRenderer.enabled = false;
         HoldingCake = null;
+
+        UIManager.Inst.UIToggle_InfoReload();
+
+        //떨어지는거 기다리기
+        yield return new WaitForSeconds(1f);
+
+
+        //카메라 위치 부드럽게 업데이트
+        GameManager.Inst.UpdateCameraPositionDotween();
+        yield return new WaitForSeconds(0.5f);
+
+        //구글 시트에 값 저장 (높이, 최고높이, json )
+
+
+        // 랭킹 업데이트
+
+        UIManager.Inst.UIToggle_InfoReload();
+        isCanDropCake = true;
     }
 
     public void RotateHoldingCake(bool isRotateLeft)
