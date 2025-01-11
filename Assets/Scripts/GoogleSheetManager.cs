@@ -5,15 +5,28 @@ using UnityEngine.Networking;
 using TMPro;
 using System;
 using System.Linq;
+using UnityEngine.SceneManagement;
+
+[System.Serializable]
+public class GoogleData
+{
+    public string order, result, msg, _id,_name,_score,_height,_maxheight,_json;
+}
 
 public class GoogleSheetManager : MonoBehaviour
 {
 
 
     [SerializeField]
-    TMP_Text text;
-    
-    const string URL = "https://docs.google.com/spreadsheets/d/1nkbak1ng5qjt4n6Hf9cYUO45CTvvzKRDOmRSK1WRAwk/export?format=tsv";
+    TMP_Text text_reponse;
+
+    [SerializeField]
+    TMP_Text text_Debug;
+
+    const string URL = "https://script.google.com/macros/s/AKfycbz1w85NkFyqWb9fUWHLLevrZBAT1lgRG8exwvwrpShXMfwtILMznRcwMhicrtAz3fnL/exec";
+    public string sheetData = "";
+    public GoogleData GD;
+
 
     public static GoogleSheetManager Inst { get; private set; }
 
@@ -31,7 +44,7 @@ public class GoogleSheetManager : MonoBehaviour
 
     private void Start()
     {
-        UpdateGameDataBySheet();
+        //UpdateGameDataBySheet();
     }
 
     public void UpdateGameDataBySheet()
@@ -44,13 +57,18 @@ public class GoogleSheetManager : MonoBehaviour
         UnityWebRequest www = UnityWebRequest.Get(URL);
         yield return www.SendWebRequest();
 
-        //데이터 가져오기
+
         string data = www.downloadHandler.text;
+        print(data);
 
-        text.text = GetDataById(data, DiscordManager.Inst.userId);
+        //--- 이전 ----
+        ////데이터 가져오기
+        //string data = www.downloadHandler.text;
 
-        //랭킹 업데이트
-        UIManager.Inst.UpdateRanking(GetTopMaxHeightPlayers(data, 5));
+        //text.text = GetDataById(data, DiscordManager.Inst.userId);
+
+        ////랭킹 업데이트
+        //UIManager.Inst.UpdateRanking(GetTopMaxHeightPlayers(data, 5));
 
 
         //print(data);
@@ -110,5 +128,128 @@ public class GoogleSheetManager : MonoBehaviour
         // MaxHeight를 기준으로 내림차순 정렬 후 상위 topCount 추출
         return players.OrderByDescending(p => p.MaxHeight).Take(topCount).ToList();
     }
+
+    [ContextMenu("register")]
+    public void Register()
+    {
+        string id = DiscordManager.Inst.userId;
+        string _name = DiscordManager.Inst.userName;
+
+        WWWForm form = new WWWForm();
+        form.AddField("order", "register");
+        form.AddField("id", id);
+        form.AddField("name", _name);
+        form.AddField("score", 5);
+        form.AddField("height", 0);
+        form.AddField("maxheight", 0);
+        form.AddField("json", "none");
+
+        StartCoroutine(Post(form));
+        
+    }
+
+    [ContextMenu("Login")]
+    public void Login()
+    {
+        string id = DiscordManager.Inst.userId;
+
+        WWWForm form = new WWWForm();
+        form.AddField("order", "login");
+        form.AddField("id", id);
+
+        StartCoroutine(Post(form));
+    }
+
+    public void SetValue()
+    {
+        //WWWForm form = new WWWForm();
+        //form.AddField("order", "getValue");
+
+        //StartCoroutine(Post(form));
+    }
+
+    [ContextMenu("GetValue")]
+    public void GetValue()
+    {
+        string id = DiscordManager.Inst.userId;
+        WWWForm form = new WWWForm();
+        form.AddField("order", "getValue");
+        form.AddField("id", id);
+
+        StartCoroutine(Post(form));
+    }
+
+    IEnumerator Post(WWWForm form)
+    {
+        using (UnityWebRequest www = UnityWebRequest.Post(URL, form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.isDone) Response(www.downloadHandler.text);
+            else print("웹 응답 없음");
+        }
+    }
+
+    void Response(string json)
+    {
+        if (string.IsNullOrEmpty(json)) return;
+
+        GD = JsonUtility.FromJson<GoogleData>(json);
+
+        if(GD.result == "ERROR")
+        {
+            print(GD.order + " 을 실행할 수 없습니다. 에러 메세지 : " + GD.msg);
+            text_reponse.text = GD.order + " 을 실행할 수 없습니다. 에러 메세지 : " + GD.msg;
+            return;
+        }
+
+        if (GD.result == "OK")
+        {
+            print(GD.order + " 을 실행했습니다. 메세지 : " + GD.msg);
+            text_reponse.text = GD.order + " 을 실행했습니다. 메세지 : " + GD.msg;
+        }
+
+        // 로그인 정보 없음 -> 회원가입
+        if(GD.order == "login" && GD.result == "NOLOGINDATA")
+        {
+            print(GD.order + " 을 실행했습니다. 메세지 : 회원가입해야함 ");
+            text_reponse.text = GD.order + " 을 실행했습니다. 메세지 : 회원가입해야함 ";
+            Register();
+            
+
+            return;
+        }
+
+        if(GD.order == "login" && GD.result == "OK")
+        {
+            print(GD.order + " 을 실행했습니다. 메세지 : " + GD.msg);
+            text_reponse.text = GD.order + " 을 실행했습니다. 메세지 : " + GD.msg;
+            SceneManager.LoadScene("GameScene");
+        }
+
+        if(GD.order == "register")
+        {
+            Login();
+        }
+
+        if(GD.order == "getValue" && GD.result == "OK")
+        {
+            sheetData = GD._id + GD._name + GD._score+GD._height + GD._maxheight + GD._json;
+            print("Sheet Data : " + sheetData);
+            text_reponse.text = "Sheet Data : " + sheetData;
+
+            //text_Debug.text = GD.value;
+        }
+    }
+
+
+    private void OnApplicationQuit()
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("order", "logout");
+
+        StartCoroutine (Post(form));
+    }
+
 }
 

@@ -11,10 +11,10 @@ public class DiscordManager : MonoBehaviour
     public TMP_Text Txt_Username;
     //public TMP_Text Txt_JsonResponse;
 
-    private string _userName = "none";
+    private string _userName = "none444";
     public string userName { get { return _userName; } private set { _userName = value; } }
 
-    private string _userId = "123";
+    private string _userId = "1237";
     public string userId { get { return _userId; } private set { _userId = value; } }
 
     private const string CLIENT_ID = "1319574653697658890";
@@ -132,7 +132,8 @@ public class DiscordManager : MonoBehaviour
             userName = userInfo.username;
             //txt_good.text = $"User: {userInfo.username} (ID: {userInfo.id})";
             Txt_Username.text = userName;
-            SceneManager.LoadScene("GameScene");
+            GoogleSheetManager.Inst.Login();
+            
         }
         else
         {
