@@ -33,7 +33,7 @@ async def on_message(message):  # 메시지 전송 완료 시
             await message.add_reaction('✅')
             cell = worksheet.find(f'{message.author.id}')
             if not cell:
-                worksheet.append_row([f'{message.author.id}', f'{message.author.nick[:3]}', '5', '0', '0', 'none'])
+                worksheet.append_row([f'{message.author.id}', f'{message.author.nick[:3]}', '5', '0', '0', 'None'])
             else:
                 score = worksheet.cell(cell.row, 3).value
                 worksheet.update_cell(cell.row, 3, f'{int(score) + 5}')
