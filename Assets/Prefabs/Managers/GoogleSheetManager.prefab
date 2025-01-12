@@ -160,6 +160,16 @@ MonoBehaviour:
     _height: 
     _maxheight: 
     _json: 
+    _r1name: 
+    _r1height: 
+    _r2name: 
+    _r2height: 
+    _r3name: 
+    _r3height: 
+    _r4name: 
+    _r4height: 
+    _r5name: 
+    _r5height: 
 --- !u!1 &3927734143153319922
 GameObject:
   m_ObjectHideFlags: 0
@@ -225,7 +235,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: deb
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 040612b4d3be854479cff84c0d41e14c, type: 2}
   m_sharedMaterial: {fileID: 7650172846522736574, guid: 040612b4d3be854479cff84c0d41e14c, type: 2}
@@ -359,7 +369,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: res
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 040612b4d3be854479cff84c0d41e14c, type: 2}
   m_sharedMaterial: {fileID: 7650172846522736574, guid: 040612b4d3be854479cff84c0d41e14c, type: 2}

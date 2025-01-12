@@ -34,6 +34,9 @@ public class PlayerManager : MonoBehaviour
     [Space(10), SerializeField, Header("Particles")]
     public List<GameObject> particlePrefabs; // 파티클 프리팹 리스트
 
+    //업데이트 판넬
+    [SerializeField]
+    GameObject Panel_Update;
 
     private bool isCanDropCake = true;
 
@@ -47,6 +50,11 @@ public class PlayerManager : MonoBehaviour
         }
         Inst = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void Start()
+    {
+        GameStartSetup();
     }
 
     private void Update()
@@ -139,35 +147,58 @@ public class PlayerManager : MonoBehaviour
             else
             {
                 // 장전 인돼있을 때
-                ReloadCake();
+                StartCoroutine(ReloadCake());
             }
 
 
         }
     }
 
-    public void ReloadCake()
+    public IEnumerator ReloadCake()
     {
-        Vector3 worldPos = Camera.main.ScreenToWorldPoint(
-    new Vector3(cursorObj.transform.position.x, cursorObj.transform.position.y, Camera.main.nearClipPlane + 1f)
-);
-        
-        // 토큰 업데이트
-        UIManager.Inst.UpdateToken();
-        CakeInfo newCake = cakeList.GetCakeInfoRandomByWeight();
+        isCanDropCake = false;
+        UIManager.Inst.UIToggle_InfoReload();
 
-        //파티클
-        PlayParticleByCakeType(newCake.cakeType);
 
-        // 생성
-        HoldingCake = Instantiate(newCake.cakeObj);
-        HoldingCake.GetComponent<Cake>().cakeNumber = newCake.cakeNumber;
-        HoldingCake.transform.position = worldPos;
-        //HoldingCake.transform.rotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
-        //HoldingCake.transform.rotation = new Quaternion(0f,0f,Random.Range(0f,360f),0f);
-        HoldingCake.transform.GetChild(0).DOPunchScale(Vector3.up*0.25f, 0.5f).SetEase(Ease.InOutQuad);
+        yield return StartCoroutine(GoogleSheetManager.Inst.CoGetValue());
+
+        int token = int.Parse( GoogleSheetManager.Inst.GD._score );
+
+        if (token - 1 >= 0)
+        {
+            UIManager.Inst.tokenAmount = token -1;
+            UIManager.Inst.UpdateToken(UIManager.Inst.tokenAmount);
+
+            yield return StartCoroutine (GoogleSheetManager.Inst.CoSave());
+
+            Vector3 worldPos = Camera.main.ScreenToWorldPoint(
+        new Vector3(cursorObj.transform.position.x, cursorObj.transform.position.y, Camera.main.nearClipPlane + 1f)
+    );
+
+            // 토큰 업데이트
+            //UIManager.Inst.UpdateToken();
+            CakeInfo newCake = cakeList.GetCakeInfoRandomByWeight();
+
+            //파티클
+            PlayParticleByCakeType(newCake.cakeType);
+
+            // 생성
+            HoldingCake = Instantiate(newCake.cakeObj);
+            HoldingCake.GetComponent<Cake>().cakeNumber = newCake.cakeNumber;
+            HoldingCake.transform.position = worldPos;
+            //HoldingCake.transform.rotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
+            //HoldingCake.transform.rotation = new Quaternion(0f,0f,Random.Range(0f,360f),0f);
+            HoldingCake.transform.GetChild(0).DOPunchScale(Vector3.up * 0.25f, 0.5f).SetEase(Ease.InOutQuad);
+
+            lineRenderer.enabled = true;
+        }
+        else 
+        {
         
-        lineRenderer.enabled = true;
+        }
+
+        UIManager.Inst.UIToggle_InfoReload();
+        isCanDropCake = true;
     }
 
     public void PlayParticleByCakeType(CakeType cakeType)
@@ -251,9 +282,7 @@ public class PlayerManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         //구글 시트에 값 저장 (높이, 최고높이, json )
-
-
-        // 랭킹 업데이트
+        yield return StartCoroutine( GoogleSheetManager.Inst.CoSave() );
 
         UIManager.Inst.UIToggle_InfoReload();
         isCanDropCake = true;
@@ -370,21 +399,82 @@ public class PlayerManager : MonoBehaviour
         print("실행됨");
     }
 
-//    [ContextMenu("Setup")]
-//    public void SetupTest()
-//    {
-//        int HoldingCakeNumber = 0;
+    [ContextMenu("GameStartSetup")]
+    public void GameStartSetup()
+    {
+        StartCoroutine(CoGameStartSetup());
+    }
 
-//        Vector3 worldPos = Camera.main.ScreenToWorldPoint(
-//    new Vector3(cursorObj.transform.position.x, cursorObj.transform.position.y, Camera.main.nearClipPlane + 1f)
-//);
 
-//        // 생성
-//        HoldingCake = Instantiate(cakeList.cakes[HoldingCakeNumber].cakeObj);
-//        HoldingCake.GetComponent<Cake>().cakeNumber = HoldingCakeNumber;
-//        HoldingCake.transform.position = worldPos;
-//        HoldingCake.transform.GetChild(0).DOPunchScale(Vector3.up * 0.25f, 0.5f).SetEase(Ease.InOutQuad);
+    IEnumerator CoGameStartSetup()
+    {
+        isCanDropCake = false;
+        Panel_Update.SetActive(true);
 
-//        print("실행됨");
-//    }
+        //값 불러오기 ( 랭킹 자동 업데이트 )
+        yield return StartCoroutine( GoogleSheetManager.Inst.CoGetValue() );
+
+        // 토큰, 높이 UI 업데이트
+        UIManager.Inst.UISetUp(int.Parse( GoogleSheetManager.Inst.GD._score ), (GoogleSheetManager.Inst.GD._maxheight));
+        
+        //케이크 정보 가져오기
+        if(GoogleSheetManager.Inst.GD._json != "none")
+        {
+            DataManager.Inst.LoadData(GoogleSheetManager.Inst.GD._json);
+        }
+
+        isCanDropCake = true;
+        Panel_Update.SetActive(false);
+        MasterAudio.PlaySound("reload choco");
+    }
+
+    public void Save()
+    {
+        StartCoroutine(CoSave());
+    }
+
+    public IEnumerator CoSave()
+    {
+        isCanDropCake = false;
+        Panel_Update.SetActive(true);
+
+        yield return StartCoroutine(GoogleSheetManager.Inst.CoSave());
+
+        isCanDropCake = true;
+        Panel_Update.SetActive(false);
+    }
+
+    public void InfoUpdate()
+    {
+        StartCoroutine(CoInfoUpdate());
+    }
+
+    public IEnumerator CoInfoUpdate()
+    {
+        isCanDropCake = false;
+        Panel_Update.SetActive(true);
+
+        yield return StartCoroutine(GoogleSheetManager.Inst.CoGetValue());
+
+        isCanDropCake = true;
+        Panel_Update.SetActive(false);
+    }
+
+    //    [ContextMenu("Setup")]
+    //    public void SetupTest()
+    //    {
+    //        int HoldingCakeNumber = 0;
+
+    //        Vector3 worldPos = Camera.main.ScreenToWorldPoint(
+    //    new Vector3(cursorObj.transform.position.x, cursorObj.transform.position.y, Camera.main.nearClipPlane + 1f)
+    //);
+
+    //        // 생성
+    //        HoldingCake = Instantiate(cakeList.cakes[HoldingCakeNumber].cakeObj);
+    //        HoldingCake.GetComponent<Cake>().cakeNumber = HoldingCakeNumber;
+    //        HoldingCake.transform.position = worldPos;
+    //        HoldingCake.transform.GetChild(0).DOPunchScale(Vector3.up * 0.25f, 0.5f).SetEase(Ease.InOutQuad);
+
+    //        print("실행됨");
+    //    }
 }

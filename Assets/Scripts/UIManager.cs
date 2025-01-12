@@ -42,6 +42,8 @@ public class UIManager : MonoBehaviour
 
     [SerializeField, Space(10), Header("Token")]
     GameObject Icon_Token;
+    public TMP_Text txt_Token;
+    public int tokenAmount = 0;
 
     [SerializeField, Space(10), Header("Minimap")]
     GameObject Area_MinimapCam;
@@ -101,23 +103,34 @@ public class UIManager : MonoBehaviour
         }
 
         //GameManager.Inst.UpdateCameraPosition(height);
-
+        currentHeight = height;
         txt_CurrentHeight.text = height.ToString("F2") + "m";
     }
 
-    public void UpdateToken()
+    public void UpdateToken(int token)
     {
+        tokenAmount = token;
+        txt_Token.text = tokenAmount.ToString();
         Icon_Token.GetComponent<RectTransform>().DOPunchScale(new Vector3(0f,0.5f,0f), 0.5f).SetEase(Ease.InOutQuad);
     }
 
-    public void UpdateRanking(List<(string Name, float MaxHeight)> rankList)
+    public void UpdateRanking(List<(string Name, string MaxHeight)> rankList)
     {
         print(rankList.Count);
 
         for (int i = 0; i < rankList.Count; i++) 
         {
             Txt_RankerNames[i].text = rankList[i].Name;
-            Txt_RankerHeight[i].text = rankList[i].MaxHeight.ToString("F2") + "m";
+
+            if(rankList[i].MaxHeight.Length < 4)
+            {
+                Txt_RankerHeight[i].text = rankList[i].MaxHeight + "m";
+            }
+            else
+            {
+                Txt_RankerHeight[i].text = rankList[i].MaxHeight.Substring(0, 4) + "m";
+            }
+            
         }
 
 
@@ -134,5 +147,23 @@ public class UIManager : MonoBehaviour
     public void UIToggle_InfoReload()
     {
         Obj_infoReload.GetComponent<BTN_Animation>().Toggle();
+        MasterAudio.PlaySound("button Click");
+    }
+
+    public void UISetUp(int _token, string maxheight)
+    {
+        tokenAmount = _token;
+        peakHeight = float.Parse( maxheight);
+
+        if(maxheight.Length < 4)
+        {
+            txt_PeakHeight.text = maxheight.ToString() + "m";
+        }
+        else
+        {
+            txt_PeakHeight.text = maxheight.Substring(0,4) + "m";
+        }
+
+        txt_Token.text = tokenAmount.ToString();
     }
 }

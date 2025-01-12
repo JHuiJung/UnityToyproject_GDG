@@ -62,4 +62,14 @@ public class BTN_Animation : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         isOpen = false;
         this.GetComponent<RectTransform>().DOAnchorPos(OriginPos, 0.25f).SetEase(Ease.InOutQuad);
     }
+
+    public void Save()
+    {
+        PlayerManager.Inst.Save();
+    }
+
+    public void InfoUpdate()
+    {
+        PlayerManager.Inst.InfoUpdate();
+    }
 }

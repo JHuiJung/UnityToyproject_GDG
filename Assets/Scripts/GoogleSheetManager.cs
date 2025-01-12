@@ -11,6 +11,11 @@ using UnityEngine.SceneManagement;
 public class GoogleData
 {
     public string order, result, msg, _id,_name,_score,_height,_maxheight,_json;
+    public string _r1name, _r1height;
+    public string _r2name, _r2height;
+    public string _r3name, _r3height;
+    public string _r4name, _r4height;
+    public string _r5name, _r5height;
 }
 
 public class GoogleSheetManager : MonoBehaviour
@@ -23,7 +28,7 @@ public class GoogleSheetManager : MonoBehaviour
     [SerializeField]
     TMP_Text text_Debug;
 
-    const string URL = "https://script.google.com/macros/s/AKfycbz1w85NkFyqWb9fUWHLLevrZBAT1lgRG8exwvwrpShXMfwtILMznRcwMhicrtAz3fnL/exec";
+    const string URL = "https://script.google.com/macros/s/AKfycbx5ZG6hVXVyZ_rjPtstylh9aVOOXil2vs4SDuzPLBv66v6LUS1J0XmXTsxE_m8RYUX8/exec";
     public string sheetData = "";
     public GoogleData GD;
 
@@ -160,23 +165,45 @@ public class GoogleSheetManager : MonoBehaviour
         StartCoroutine(Post(form));
     }
 
-    public void SetValue()
+    [ContextMenu("Save")]
+    public void Save()
     {
-        //WWWForm form = new WWWForm();
-        //form.AddField("order", "getValue");
+        StartCoroutine(CoSave());
+    }
 
-        //StartCoroutine(Post(form));
+    public IEnumerator CoSave()
+    {
+        string id = DiscordManager.Inst.userId;
+        string cakeJson = "none";
+
+        cakeJson = DataManager.Inst.GetSaveData();
+
+        WWWForm form = new WWWForm();
+        form.AddField("order", "save");
+        form.AddField("id", id);
+        form.AddField("score", UIManager.Inst.tokenAmount);
+        form.AddField("height", UIManager.Inst.currentHeight.ToString());
+        form.AddField("maxheight", UIManager.Inst.peakHeight.ToString());
+        form.AddField("json", cakeJson);
+
+        yield return StartCoroutine(Post(form));
     }
 
     [ContextMenu("GetValue")]
     public void GetValue()
     {
+        StartCoroutine(CoGetValue());
+    }
+
+    public IEnumerator CoGetValue()
+    {
+        //print(222);
         string id = DiscordManager.Inst.userId;
         WWWForm form = new WWWForm();
         form.AddField("order", "getValue");
         form.AddField("id", id);
 
-        StartCoroutine(Post(form));
+        yield return StartCoroutine(Post(form));
     }
 
     IEnumerator Post(WWWForm form)
@@ -199,21 +226,21 @@ public class GoogleSheetManager : MonoBehaviour
         if(GD.result == "ERROR")
         {
             print(GD.order + " 을 실행할 수 없습니다. 에러 메세지 : " + GD.msg);
-            text_reponse.text = GD.order + " 을 실행할 수 없습니다. 에러 메세지 : " + GD.msg;
+            //text_reponse.text = GD.order + " 을 실행할 수 없습니다. 에러 메세지 : " + GD.msg;
             return;
         }
 
         if (GD.result == "OK")
         {
             print(GD.order + " 을 실행했습니다. 메세지 : " + GD.msg);
-            text_reponse.text = GD.order + " 을 실행했습니다. 메세지 : " + GD.msg;
+            //text_reponse.text = GD.order + " 을 실행했습니다. 메세지 : " + GD.msg;
         }
 
         // 로그인 정보 없음 -> 회원가입
         if(GD.order == "login" && GD.result == "NOLOGINDATA")
         {
             print(GD.order + " 을 실행했습니다. 메세지 : 회원가입해야함 ");
-            text_reponse.text = GD.order + " 을 실행했습니다. 메세지 : 회원가입해야함 ";
+            //text_reponse.text = GD.order + " 을 실행했습니다. 메세지 : 회원가입해야함 ";
             Register();
             
 
@@ -223,7 +250,7 @@ public class GoogleSheetManager : MonoBehaviour
         if(GD.order == "login" && GD.result == "OK")
         {
             print(GD.order + " 을 실행했습니다. 메세지 : " + GD.msg);
-            text_reponse.text = GD.order + " 을 실행했습니다. 메세지 : " + GD.msg;
+            //text_reponse.text = GD.order + " 을 실행했습니다. 메세지 : " + GD.msg;
             SceneManager.LoadScene("GameScene");
         }
 
@@ -234,10 +261,20 @@ public class GoogleSheetManager : MonoBehaviour
 
         if(GD.order == "getValue" && GD.result == "OK")
         {
-            sheetData = GD._id + GD._name + GD._score+GD._height + GD._maxheight + GD._json;
-            print("Sheet Data : " + sheetData);
-            text_reponse.text = "Sheet Data : " + sheetData;
+            sheetData = GD._id + GD._name + GD._score+GD._height + GD._maxheight + GD._json+ GD._r1height + GD._r1name
+                + GD._r2height + GD._r2name + GD._r3height + GD._r3name + GD._r4height + GD._r4name + GD._r5height + GD._r5name;
+            //print("Sheet Data : " + sheetData);
+            //text_reponse.text = "Sheet Data : " + sheetData;
 
+            List<(string Name, string MaxHeight)> _rankList = new List<(string Name, string MaxHeight)>();
+
+            _rankList.Add((GD._r1name, GD._r1height));
+            _rankList.Add((GD._r2name, GD._r2height));
+            _rankList.Add((GD._r3name, GD._r3height));
+            _rankList.Add((GD._r4name, GD._r4height));
+            _rankList.Add((GD._r5name, GD._r5height));
+
+            UIManager.Inst.UpdateRanking(_rankList);
             //text_Debug.text = GD.value;
         }
     }
@@ -246,7 +283,7 @@ public class GoogleSheetManager : MonoBehaviour
     private void OnApplicationQuit()
     {
         WWWForm form = new WWWForm();
-        form.AddField("order", "logout");
+        form.AddField("order", "save");
 
         StartCoroutine (Post(form));
     }

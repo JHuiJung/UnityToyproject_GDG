@@ -54,7 +54,7 @@ public class DataManager : MonoBehaviour
     }
 
     [ContextMenu("SaveData")]
-    public void SaveData()
+    public string GetSaveData()
     {
         //현재 로그인한 사람의 행을 기준으로 저장
         // 최대 높이, 현재 높이, 토큰, json을 저장함
@@ -87,11 +87,11 @@ public class DataManager : MonoBehaviour
                 float rx = (float)Math.Round(cake.transform.rotation.x, 4);
                 float ry = (float)Math.Round(cake.transform.rotation.y, 4);
                 float rz = (float)Math.Round(cake.transform.rotation.z, 4);
-                float rw = (float)Math.Round(cake.transform.rotation.z, 4);
+                float rw = (float)Math.Round(cake.transform.rotation.w, 4);
 
                 Quaternion rot = new Quaternion(rx, ry, rz, rw);
-                print(px);
-                print(rz);
+                //print(px);
+                //print(rz);
                 _jsonInfo.N = cake.cakeNumber;
                 _jsonInfo.G = cake.isGound;
 
@@ -125,70 +125,117 @@ public class DataManager : MonoBehaviour
         }
 
         string json = JsonUtility.ToJson(_saveData, true);
-        string path = Path.Combine(Application.dataPath, "database.json");
+        return json;
+        //string path = Path.Combine(Application.dataPath, "database.json");
 
-        File.WriteAllText(path, json);
+        //File.WriteAllText(path, json);
 
         // 최대 높이, 현재 높이, 토큰 저장
     }
 
     [ContextMenu("LoadData")]
-    public void LoadData()
+    public void LoadData(string _json)
     {
-        string path = Path.Combine(Application.dataPath, "database.json");
+        JsonData loadedData = JsonUtility.FromJson<JsonData>(_json);
 
-        // 파일이 존재하는지 확인
-        if (File.Exists(path))
+        //print(loadedData.HoldingCakeNumber);
+        // HoldingCake 복원
+        if (loadedData.HoldingCakeNumber != -1)
         {
-            string json = File.ReadAllText(path);
-
-            // JSON 데이터를 역직렬화
-            JsonData loadedData = JsonUtility.FromJson<JsonData>(json);
-
-            print(loadedData.HoldingCakeNumber);
-            // HoldingCake 복원
-            if ( loadedData.HoldingCakeNumber != -1)
-            {
-                PlayerManager.Inst.Setup(loadedData.HoldingCakeNumber);
-            }
-
-            // 기존 씬에 있는 Cake 오브젝트를 정리 (필요에 따라 제거하는 코드 추가 가능)
-            //Cake[] existingCakes = FindObjectsOfType<Cake>();
-            //foreach (Cake cake in existingCakes)
-            //{
-            //    Destroy(cake.gameObject);
-            //}
-
-            // CakeJsonList를 기반으로 새로운 Cake 오브젝트 생성
-            foreach (CakeJsonInfo cakeInfo in loadedData.CakeJsonList)
-            {
-                // 새로운 GameObject 생성
-                GameObject cakeObject = Instantiate(CakeList.cakes[cakeInfo.N].cakeObj);
-
-                // Cake 스크립트 추가
-                Cake cakeComponent = cakeObject.GetComponent<Cake>();
-
-                // 속성 설정
-                cakeComponent.cakeNumber = cakeInfo.N;
-                cakeComponent.isGound = cakeInfo.G;
-
-                Vector3 pos = new Vector3(cakeInfo.x, cakeInfo.y, cakeInfo.z);
-                Quaternion rot = new Quaternion(cakeInfo.q, cakeInfo.w, cakeInfo.e, cakeInfo.r);
-
-                // 위치와 회전 설정
-                cakeObject.transform.position = pos;
-                cakeObject.transform.rotation = rot;
-
-                cakeComponent.Setup(cakeInfo.G);
-                //Debug.Log($"Loaded Cake: {cakeInfo.cakeNumber} at {cakeInfo.cakePosition}");
-            }
-
-            Debug.Log("Data successfully loaded!");
+            PlayerManager.Inst.Setup(loadedData.HoldingCakeNumber);
         }
-        else
+
+        // 기존 씬에 있는 Cake 오브젝트를 정리 (필요에 따라 제거하는 코드 추가 가능)
+        //Cake[] existingCakes = FindObjectsOfType<Cake>();
+        //foreach (Cake cake in existingCakes)
+        //{
+        //    Destroy(cake.gameObject);
+        //}
+
+        // CakeJsonList를 기반으로 새로운 Cake 오브젝트 생성
+        foreach (CakeJsonInfo cakeInfo in loadedData.CakeJsonList)
         {
-            Debug.LogWarning("Save file not found!");
+            // 새로운 GameObject 생성
+            GameObject cakeObject = Instantiate(CakeList.cakes[cakeInfo.N].cakeObj);
+
+            // Cake 스크립트 추가
+            Cake cakeComponent = cakeObject.GetComponent<Cake>();
+
+            // 속성 설정
+            cakeComponent.cakeNumber = cakeInfo.N;
+            cakeComponent.isGound = cakeInfo.G;
+
+            Vector3 pos = new Vector3(cakeInfo.x, cakeInfo.y, cakeInfo.z);
+            Quaternion rot = new Quaternion(cakeInfo.q, cakeInfo.w, cakeInfo.e, cakeInfo.r);
+
+            // 위치와 회전 설정
+            cakeObject.transform.position = pos;
+            cakeObject.transform.rotation = rot;
+
+            cakeComponent.Setup(cakeInfo.G);
+            //Debug.Log($"Loaded Cake: {cakeInfo.cakeNumber} at {cakeInfo.cakePosition}");
         }
+
+        Debug.Log("Data successfully loaded!");
     }
+
+    //[ContextMenu("LoadData")]
+    //public void LoadData()
+    //{
+    //    string path = Path.Combine(Application.dataPath, "database.json");
+
+    //    // 파일이 존재하는지 확인
+    //    if (File.Exists(path))
+    //    {
+    //        string json = File.ReadAllText(path);
+
+    //        // JSON 데이터를 역직렬화
+    //        JsonData loadedData = JsonUtility.FromJson<JsonData>(json);
+
+    //        print(loadedData.HoldingCakeNumber);
+    //        // HoldingCake 복원
+    //        if ( loadedData.HoldingCakeNumber != -1)
+    //        {
+    //            PlayerManager.Inst.Setup(loadedData.HoldingCakeNumber);
+    //        }
+
+    //        // 기존 씬에 있는 Cake 오브젝트를 정리 (필요에 따라 제거하는 코드 추가 가능)
+    //        //Cake[] existingCakes = FindObjectsOfType<Cake>();
+    //        //foreach (Cake cake in existingCakes)
+    //        //{
+    //        //    Destroy(cake.gameObject);
+    //        //}
+
+    //        // CakeJsonList를 기반으로 새로운 Cake 오브젝트 생성
+    //        foreach (CakeJsonInfo cakeInfo in loadedData.CakeJsonList)
+    //        {
+    //            // 새로운 GameObject 생성
+    //            GameObject cakeObject = Instantiate(CakeList.cakes[cakeInfo.N].cakeObj);
+
+    //            // Cake 스크립트 추가
+    //            Cake cakeComponent = cakeObject.GetComponent<Cake>();
+
+    //            // 속성 설정
+    //            cakeComponent.cakeNumber = cakeInfo.N;
+    //            cakeComponent.isGound = cakeInfo.G;
+
+    //            Vector3 pos = new Vector3(cakeInfo.x, cakeInfo.y, cakeInfo.z);
+    //            Quaternion rot = new Quaternion(cakeInfo.q, cakeInfo.w, cakeInfo.e, cakeInfo.r);
+
+    //            // 위치와 회전 설정
+    //            cakeObject.transform.position = pos;
+    //            cakeObject.transform.rotation = rot;
+
+    //            cakeComponent.Setup(cakeInfo.G);
+    //            //Debug.Log($"Loaded Cake: {cakeInfo.cakeNumber} at {cakeInfo.cakePosition}");
+    //        }
+
+    //        Debug.Log("Data successfully loaded!");
+    //    }
+    //    else
+    //    {
+    //        Debug.LogWarning("Save file not found!");
+    //    }
+    //}
 
 }
