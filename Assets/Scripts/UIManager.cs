@@ -43,7 +43,10 @@ public class UIManager : MonoBehaviour
     [SerializeField, Space(10), Header("Token")]
     GameObject Icon_Token;
     public TMP_Text txt_Token;
+    public int preTokenAmount = 0;
     public int tokenAmount = 0;
+    public Transform TF_Panel_ErrorToken_Parent;
+    public GameObject Panel_ErrorToken;
 
     [SerializeField, Space(10), Header("Minimap")]
     GameObject Area_MinimapCam;
@@ -107,9 +110,9 @@ public class UIManager : MonoBehaviour
         txt_CurrentHeight.text = height.ToString("F2") + "m";
     }
 
-    public void UpdateToken(int token)
+    public void UpdateToken(int _token)
     {
-        tokenAmount = token;
+        tokenAmount = _token;
         txt_Token.text = tokenAmount.ToString();
         Icon_Token.GetComponent<RectTransform>().DOPunchScale(new Vector3(0f,0.5f,0f), 0.5f).SetEase(Ease.InOutQuad);
     }
@@ -165,5 +168,21 @@ public class UIManager : MonoBehaviour
         }
 
         txt_Token.text = tokenAmount.ToString();
+    }
+
+    public void TokenError()
+    {
+        var np = Instantiate(Panel_ErrorToken);
+
+        
+        np.transform.SetParent(TF_Panel_ErrorToken_Parent);
+        np.transform.SetAsLastSibling();
+
+        RectTransform rt = np.GetComponent<RectTransform>();
+        rt.anchoredPosition = Vector2.zero + Vector2.down*50f;
+        rt.DOAnchorPos(rt.anchoredPosition + Vector2.up * 50f, 1f).SetEase(Ease.InOutQuad).OnComplete(() =>
+        {
+            Destroy(np);
+        });
     }
 }

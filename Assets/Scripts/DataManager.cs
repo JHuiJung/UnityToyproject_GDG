@@ -20,8 +20,8 @@ public class CakeJsonInfo
     public float y = 0f;
     public float z = 0f;
 
-    public float q = 0f;
-    public float w = 0f;
+    //public float q = 0f;
+    //public float w = 0f;
     public float e = 0f;
     public float r = 0f;
 
@@ -99,8 +99,8 @@ public class DataManager : MonoBehaviour
                 _jsonInfo.y = py;
                 _jsonInfo.z = pz;
 
-                _jsonInfo.q = rx;
-                _jsonInfo.w = ry;
+                //_jsonInfo.q = rx;
+                //_jsonInfo.w = ry;
                 _jsonInfo.e = rz;
                 _jsonInfo.r = rw;
 
@@ -166,7 +166,8 @@ public class DataManager : MonoBehaviour
             cakeComponent.isGound = cakeInfo.G;
 
             Vector3 pos = new Vector3(cakeInfo.x, cakeInfo.y, cakeInfo.z);
-            Quaternion rot = new Quaternion(cakeInfo.q, cakeInfo.w, cakeInfo.e, cakeInfo.r);
+            //Quaternion rot = new Quaternion(cakeInfo.q, cakeInfo.w, cakeInfo.e, cakeInfo.r);
+            Quaternion rot = new Quaternion(0f, 0f, cakeInfo.e, cakeInfo.r);
 
             // 위치와 회전 설정
             cakeObject.transform.position = pos;

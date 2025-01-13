@@ -157,19 +157,14 @@ public class PlayerManager : MonoBehaviour
     public IEnumerator ReloadCake()
     {
         isCanDropCake = false;
-        UIManager.Inst.UIToggle_InfoReload();
+        
 
-
-        yield return StartCoroutine(GoogleSheetManager.Inst.CoGetValue());
-
-        int token = int.Parse( GoogleSheetManager.Inst.GD._score );
-
+        int token = UIManager.Inst.tokenAmount;
+        
         if (token - 1 >= 0)
         {
-            UIManager.Inst.tokenAmount = token -1;
-            UIManager.Inst.UpdateToken(UIManager.Inst.tokenAmount);
-
-            yield return StartCoroutine (GoogleSheetManager.Inst.CoSave());
+            //UIManager.Inst.UIToggle_InfoReload();
+            UIManager.Inst.UpdateToken(token - 1);
 
             Vector3 worldPos = Camera.main.ScreenToWorldPoint(
         new Vector3(cursorObj.transform.position.x, cursorObj.transform.position.y, Camera.main.nearClipPlane + 1f)
@@ -191,13 +186,55 @@ public class PlayerManager : MonoBehaviour
             HoldingCake.transform.GetChild(0).DOPunchScale(Vector3.up * 0.25f, 0.5f).SetEase(Ease.InOutQuad);
 
             lineRenderer.enabled = true;
+
+            //UIManager.Inst.UIToggle_InfoReload();
         }
-        else 
+        else
         {
-        
+            UIManager.Inst.TokenError();
         }
 
-        UIManager.Inst.UIToggle_InfoReload();
+        yield return null;
+
+
+    //    yield return StartCoroutine(GoogleSheetManager.Inst.CoGetValue());
+
+    //    int token = int.Parse(GoogleSheetManager.Inst.GD._score);
+
+    //    if (token - 1 >= 0)
+    //    {
+    //        UIManager.Inst.tokenAmount = token - 1;
+    //        UIManager.Inst.UpdateToken(UIManager.Inst.tokenAmount);
+
+    //        yield return StartCoroutine(GoogleSheetManager.Inst.CoSave());
+
+    //        Vector3 worldPos = Camera.main.ScreenToWorldPoint(
+    //    new Vector3(cursorObj.transform.position.x, cursorObj.transform.position.y, Camera.main.nearClipPlane + 1f)
+    //);
+
+    //        // 토큰 업데이트
+    //        //UIManager.Inst.UpdateToken();
+    //        CakeInfo newCake = cakeList.GetCakeInfoRandomByWeight();
+
+    //        //파티클
+    //        PlayParticleByCakeType(newCake.cakeType);
+
+    //        // 생성
+    //        HoldingCake = Instantiate(newCake.cakeObj);
+    //        HoldingCake.GetComponent<Cake>().cakeNumber = newCake.cakeNumber;
+    //        HoldingCake.transform.position = worldPos;
+    //        //HoldingCake.transform.rotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
+    //        //HoldingCake.transform.rotation = new Quaternion(0f,0f,Random.Range(0f,360f),0f);
+    //        HoldingCake.transform.GetChild(0).DOPunchScale(Vector3.up * 0.25f, 0.5f).SetEase(Ease.InOutQuad);
+
+    //        lineRenderer.enabled = true;
+    //    }
+    //    else
+    //    {
+
+    //    }
+
+
         isCanDropCake = true;
     }
 
@@ -274,7 +311,7 @@ public class PlayerManager : MonoBehaviour
         UIManager.Inst.UIToggle_InfoReload();
 
         //떨어지는거 기다리기
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
 
 
         //카메라 위치 부드럽게 업데이트
@@ -282,7 +319,7 @@ public class PlayerManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         //구글 시트에 값 저장 (높이, 최고높이, json )
-        yield return StartCoroutine( GoogleSheetManager.Inst.CoSave() );
+        //yield return StartCoroutine( GoogleSheetManager.Inst.CoSave() );
 
         UIManager.Inst.UIToggle_InfoReload();
         isCanDropCake = true;
@@ -418,7 +455,7 @@ public class PlayerManager : MonoBehaviour
         UIManager.Inst.UISetUp(int.Parse( GoogleSheetManager.Inst.GD._score ), (GoogleSheetManager.Inst.GD._maxheight));
         
         //케이크 정보 가져오기
-        if(GoogleSheetManager.Inst.GD._json != "none")
+        if(GoogleSheetManager.Inst.GD._json != "None")
         {
             DataManager.Inst.LoadData(GoogleSheetManager.Inst.GD._json);
         }
@@ -454,7 +491,22 @@ public class PlayerManager : MonoBehaviour
         isCanDropCake = false;
         Panel_Update.SetActive(true);
 
+        int PreToken = 0;
+
+        PreToken = UIManager.Inst.preTokenAmount;
+        int nowToken = UIManager.Inst.tokenAmount;
+
+        int usedToken = PreToken - nowToken > 0 ? PreToken - nowToken : 0  ;
+
+
         yield return StartCoroutine(GoogleSheetManager.Inst.CoGetValue());
+
+        int Aftertoken = int.Parse(GoogleSheetManager.Inst.GD._score);
+        int finaltoken = Aftertoken - usedToken > 0 ? Aftertoken - usedToken : 0;
+        UIManager.Inst.UpdateToken(finaltoken);
+        UIManager.Inst.preTokenAmount = finaltoken;
+
+        yield return StartCoroutine(GoogleSheetManager.Inst.CoSave());
 
         isCanDropCake = true;
         Panel_Update.SetActive(false);

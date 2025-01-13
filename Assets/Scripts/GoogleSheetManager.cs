@@ -28,6 +28,9 @@ public class GoogleSheetManager : MonoBehaviour
     [SerializeField]
     TMP_Text text_Debug;
 
+    [SerializeField]
+    GameObject panel_Error;
+
     const string URL = "https://script.google.com/macros/s/AKfycbx5ZG6hVXVyZ_rjPtstylh9aVOOXil2vs4SDuzPLBv66v6LUS1J0XmXTsxE_m8RYUX8/exec";
     public string sheetData = "";
     public GoogleData GD;
@@ -147,7 +150,7 @@ public class GoogleSheetManager : MonoBehaviour
         form.AddField("score", 5);
         form.AddField("height", 0);
         form.AddField("maxheight", 0);
-        form.AddField("json", "none");
+        form.AddField("json", "None");
 
         StartCoroutine(Post(form));
         
@@ -174,7 +177,7 @@ public class GoogleSheetManager : MonoBehaviour
     public IEnumerator CoSave()
     {
         string id = DiscordManager.Inst.userId;
-        string cakeJson = "none";
+        string cakeJson = "None";
 
         cakeJson = DataManager.Inst.GetSaveData();
 
@@ -241,8 +244,9 @@ public class GoogleSheetManager : MonoBehaviour
         {
             print(GD.order + " 을 실행했습니다. 메세지 : 회원가입해야함 ");
             //text_reponse.text = GD.order + " 을 실행했습니다. 메세지 : 회원가입해야함 ";
-            Register();
-            
+            //Register();
+
+            panel_Error.SetActive(true);
 
             return;
         }
@@ -265,6 +269,8 @@ public class GoogleSheetManager : MonoBehaviour
                 + GD._r2height + GD._r2name + GD._r3height + GD._r3name + GD._r4height + GD._r4name + GD._r5height + GD._r5name;
             //print("Sheet Data : " + sheetData);
             //text_reponse.text = "Sheet Data : " + sheetData;
+
+            UIManager.Inst.preTokenAmount = int.Parse( GD._score );
 
             List<(string Name, string MaxHeight)> _rankList = new List<(string Name, string MaxHeight)>();
 

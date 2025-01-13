@@ -21196,9 +21196,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1741551950}
     - target: {fileID: 8869741645050883573, guid: 8448cba6cf050164fa2cd24cdd367617, type: 3}
+      propertyPath: Panel_ErrorToken
+      value: 
+      objectReference: {fileID: 3758106592569939011, guid: d9332bc8961d1cd439f548a921413323, type: 3}
+    - target: {fileID: 8869741645050883573, guid: 8448cba6cf050164fa2cd24cdd367617, type: 3}
       propertyPath: txt_CurrentHeight
       value: 
       objectReference: {fileID: 1021370469}
+    - target: {fileID: 8869741645050883573, guid: 8448cba6cf050164fa2cd24cdd367617, type: 3}
+      propertyPath: TF_Panel_ErrorToken_Parent
+      value: 
+      objectReference: {fileID: 1864686208}
     - target: {fileID: 8869741645050883573, guid: 8448cba6cf050164fa2cd24cdd367617, type: 3}
       propertyPath: Txt_RankerNames.Array.data[0]
       value: 
