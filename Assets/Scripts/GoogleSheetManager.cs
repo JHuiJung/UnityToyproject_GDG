@@ -288,10 +288,54 @@ public class GoogleSheetManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
+
+        //InfoUpdate();
+
+        string id = DiscordManager.Inst.userId;
+        string cakeJson = "None";
+
+        cakeJson = DataManager.Inst.GetSaveData();
+
         WWWForm form = new WWWForm();
         form.AddField("order", "save");
+        form.AddField("id", id);
+        form.AddField("score", UIManager.Inst.tokenAmount);
+        form.AddField("height", UIManager.Inst.currentHeight.ToString());
+        form.AddField("maxheight", UIManager.Inst.peakHeight.ToString());
+        form.AddField("json", cakeJson);
 
-        StartCoroutine (Post(form));
+        StartCoroutine(Post(form));
+    }
+
+    public void InfoUpdate()
+    {
+        StartCoroutine(CoInfoUpdate());
+    }
+
+    public IEnumerator CoInfoUpdate()
+    {
+        print("1");
+        int PreToken = 0;
+
+        PreToken = UIManager.Inst.preTokenAmount;
+        int nowToken = UIManager.Inst.tokenAmount;
+
+        int usedToken = PreToken - nowToken > 0 ? PreToken - nowToken : 0;
+
+
+        yield return StartCoroutine(GoogleSheetManager.Inst.CoGetValue());
+
+
+        print("2");
+        int Aftertoken = int.Parse(GoogleSheetManager.Inst.GD._score);
+        int finaltoken = Aftertoken - usedToken > 0 ? Aftertoken - usedToken : 0;
+        UIManager.Inst.UpdateToken(finaltoken);
+        UIManager.Inst.preTokenAmount = finaltoken;
+
+        yield return StartCoroutine(GoogleSheetManager.Inst.CoSave());
+
+
+        print("3");
     }
 
 }
