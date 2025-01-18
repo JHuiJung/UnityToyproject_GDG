@@ -448,17 +448,28 @@ public class PlayerManager : MonoBehaviour
         isCanDropCake = false;
         Panel_Update.SetActive(true);
 
+        List<string> string_list = new List<string>();
+
+
         //값 불러오기 ( 랭킹 자동 업데이트 )
         yield return StartCoroutine( GoogleSheetManager.Inst.CoGetValue() );
 
         // 토큰, 높이 UI 업데이트
         UIManager.Inst.UISetUp(int.Parse( GoogleSheetManager.Inst.GD._score ), (GoogleSheetManager.Inst.GD._maxheight));
-        
+
+        string_list.Add(GoogleSheetManager.Inst.GD.holdingcake);
+        string_list.Add(GoogleSheetManager.Inst.GD.isground);
+        string_list.Add(GoogleSheetManager.Inst.GD.cakenumber);
+        string_list.Add(GoogleSheetManager.Inst.GD.position);
+        string_list.Add(GoogleSheetManager.Inst.GD.rotation);
+
+        DataManager.Inst.LoadData(string_list);
+
         //케이크 정보 가져오기
-        if(GoogleSheetManager.Inst.GD._json != "None")
-        {
-            DataManager.Inst.LoadData(GoogleSheetManager.Inst.GD._json);
-        }
+        //if (GoogleSheetManager.Inst.GD._json != "None")
+        //{
+        //    DataManager.Inst.LoadData(GoogleSheetManager.Inst.GD._json);
+        //}
 
         isCanDropCake = true;
         Panel_Update.SetActive(false);

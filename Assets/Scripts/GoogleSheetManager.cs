@@ -10,7 +10,13 @@ using UnityEngine.SceneManagement;
 [System.Serializable]
 public class GoogleData
 {
-    public string order, result, msg, _id,_name,_score,_height,_maxheight,_json;
+    public string order, result, msg, _id,_name,_score,_height,_maxheight;
+    public string holdingcake;
+    public string isground;
+    public string cakenumber;
+    public string position;
+    public string rotation;
+
     public string _r1name, _r1height;
     public string _r2name, _r2height;
     public string _r3name, _r3height;
@@ -31,7 +37,7 @@ public class GoogleSheetManager : MonoBehaviour
     [SerializeField]
     GameObject panel_Error;
 
-    const string URL = "https://script.google.com/macros/s/AKfycbx5ZG6hVXVyZ_rjPtstylh9aVOOXil2vs4SDuzPLBv66v6LUS1J0XmXTsxE_m8RYUX8/exec";
+    const string URL = "https://script.google.com/macros/s/AKfycbziS_bkMyK_13Bx64g5fP44dIQn3kPTreQYNB-OgtTIBNV-ukvlPSnef7pbmia9R5XD/exec";
     public string sheetData = "";
     public GoogleData GD;
 
@@ -177,9 +183,15 @@ public class GoogleSheetManager : MonoBehaviour
     public IEnumerator CoSave()
     {
         string id = DiscordManager.Inst.userId;
-        string cakeJson = "None";
+        //string cakeJson = "None";
+        List<string> string_list = new List<string>();
 
-        cakeJson = DataManager.Inst.GetSaveData();
+        string_list = DataManager.Inst.GetSaveData();
+
+        //foreach (string s in string_list)
+        //{
+        //    print($"*** : {s}");
+        //}
 
         WWWForm form = new WWWForm();
         form.AddField("order", "save");
@@ -187,7 +199,11 @@ public class GoogleSheetManager : MonoBehaviour
         form.AddField("score", UIManager.Inst.tokenAmount);
         form.AddField("height", UIManager.Inst.currentHeight.ToString());
         form.AddField("maxheight", UIManager.Inst.peakHeight.ToString());
-        form.AddField("json", cakeJson);
+        form.AddField("holdingcake", string_list[0]);
+        form.AddField("isground", string_list[1]);
+        form.AddField("cakenumber", string_list[2]);
+        form.AddField("position", string_list[3]);
+        form.AddField("rotation", string_list[4]);
 
         yield return StartCoroutine(Post(form));
     }
@@ -265,8 +281,8 @@ public class GoogleSheetManager : MonoBehaviour
 
         if(GD.order == "getValue" && GD.result == "OK")
         {
-            sheetData = GD._id + GD._name + GD._score+GD._height + GD._maxheight + GD._json+ GD._r1height + GD._r1name
-                + GD._r2height + GD._r2name + GD._r3height + GD._r3name + GD._r4height + GD._r4name + GD._r5height + GD._r5name;
+            //sheetData = GD._id + GD._name + GD._score+GD._height + GD._maxheight + GD._json+ GD._r1height + GD._r1name
+            //    + GD._r2height + GD._r2name + GD._r3height + GD._r3name + GD._r4height + GD._r4name + GD._r5height + GD._r5name;
             //print("Sheet Data : " + sheetData);
             //text_reponse.text = "Sheet Data : " + sheetData;
 
@@ -292,9 +308,10 @@ public class GoogleSheetManager : MonoBehaviour
         //InfoUpdate();
 
         string id = DiscordManager.Inst.userId;
-        string cakeJson = "None";
+        //string cakeJson = "None";
+        List<string> string_list = new List<string>();
 
-        cakeJson = DataManager.Inst.GetSaveData();
+        string_list = DataManager.Inst.GetSaveData();
 
         WWWForm form = new WWWForm();
         form.AddField("order", "save");
@@ -302,7 +319,11 @@ public class GoogleSheetManager : MonoBehaviour
         form.AddField("score", UIManager.Inst.tokenAmount);
         form.AddField("height", UIManager.Inst.currentHeight.ToString());
         form.AddField("maxheight", UIManager.Inst.peakHeight.ToString());
-        form.AddField("json", cakeJson);
+        form.AddField("holdingcake", string_list[0]);
+        form.AddField("isground", string_list[1]);
+        form.AddField("cakenumber", string_list[2]);
+        form.AddField("position", string_list[3]);
+        form.AddField("rotation", string_list[4]);
 
         StartCoroutine(Post(form));
     }
