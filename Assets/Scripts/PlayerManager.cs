@@ -38,6 +38,9 @@ public class PlayerManager : MonoBehaviour
     [SerializeField]
     GameObject Panel_Update;
 
+    [SerializeField]
+    GameObject Panel_Guide;
+
     private bool isCanDropCake = true;
 
     private void Awake()
@@ -473,6 +476,7 @@ public class PlayerManager : MonoBehaviour
 
         isCanDropCake = true;
         Panel_Update.SetActive(false);
+        Panel_Guide.SetActive(true);
         MasterAudio.PlaySound("reload choco");
     }
 
