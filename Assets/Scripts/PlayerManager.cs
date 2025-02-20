@@ -460,6 +460,8 @@ public class PlayerManager : MonoBehaviour
         // 토큰, 높이 UI 업데이트
         UIManager.Inst.UISetUp(int.Parse( GoogleSheetManager.Inst.GD._score ), (GoogleSheetManager.Inst.GD._maxheight));
 
+        
+
         string_list.Add(GoogleSheetManager.Inst.GD.holdingcake);
         string_list.Add(GoogleSheetManager.Inst.GD.isground);
         string_list.Add(GoogleSheetManager.Inst.GD.cakenumber);
@@ -467,6 +469,9 @@ public class PlayerManager : MonoBehaviour
         string_list.Add(GoogleSheetManager.Inst.GD.rotation);
 
         DataManager.Inst.LoadData(string_list);
+
+        // 카메라 UI 업데이트
+        GameManager.Inst.UpdateCameraPositionDotween();
 
         //케이크 정보 가져오기
         //if (GoogleSheetManager.Inst.GD._json != "None")
