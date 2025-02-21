@@ -37,6 +37,9 @@ public class GoogleSheetManager : MonoBehaviour
     [SerializeField]
     GameObject panel_Error;
 
+    [SerializeField]
+    GameObject panel_Loading;
+
     const string URL = "https://script.google.com/macros/s/AKfycbziS_bkMyK_13Bx64g5fP44dIQn3kPTreQYNB-OgtTIBNV-ukvlPSnef7pbmia9R5XD/exec";
     public string sheetData = "";
     public GoogleData GD;
@@ -263,7 +266,7 @@ public class GoogleSheetManager : MonoBehaviour
             //Register();
 
             panel_Error.SetActive(true);
-
+            panel_Loading.SetActive(false);
             return;
         }
 
