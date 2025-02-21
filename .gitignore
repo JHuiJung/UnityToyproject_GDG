@@ -85,3 +85,6 @@ crashlytics-build.properties
 
 # discord token
 /DiscordBot/discordbot-444517-5f38a99c735f.json
+
+# AWS EC2
+/DiscordBot/discord-bot-key.pem
