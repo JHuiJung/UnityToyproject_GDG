@@ -39,7 +39,7 @@ async def send_daily_topic():
 
 @client.event
 async def on_message(message):  # 메시지 전송 완료 시
-    if message.channel.name == 'ilovecake_project테스트방':
+    if message.channel.name == '유쾌한-전대광장' or message.channel.name == 'i-love-cake-케익-쌓기-챌린지':
         if message.author == client.user:   # 메시지를 전송한 사용자가 봇인 경우
             return
 
