@@ -51,6 +51,9 @@
 - **디스코드 연동**: 디스코드와의 통합으로 커뮤니티 중심의 게임 경험 제공  
 - **데이터 저장**: Google Sheet를 사용한 손쉬운 데이터 관리  
 
+## 유투브 링크
+URL : https://www.youtube.com/watch?v=ZYtt32tv9_k 
+
 -------- English --------
 
 # 🏗️ **I LOVE CAKE**  
@@ -98,4 +101,7 @@ The game integrates Google Sheets for **point management and data storage**, and
 ## 🌟 **Game Features**  
 - **Real-Time Competition**: Compete with other players through a live ranking system  
 - **Discord Integration**: Community-focused gameplay experience with Discord connectivity  
-- **Data Storage**: Seamless data management using Google Sheets  
+- **Data Storage**: Seamless data management using Google Sheets
+
+## YOUTUBE LINK
+URL : https://www.youtube.com/watch?v=ZYtt32tv9_k 
