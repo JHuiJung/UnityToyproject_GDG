@@ -1,6 +1,8 @@
 # 🏗️ **I LOVE CAKE**  
 **GDG on CNU 디스코드 이용자들끼리 높은 탑을 쌓는 것을 목표로 경쟁하는 탑 쌓기 Web 게임**
 
+![Image](https://github.com/user-attachments/assets/284a3dc2-528b-4048-a1ea-50af4e50fd8d)
+
 ---
 
 ## ✨ **멤버**  
@@ -53,6 +55,8 @@
 
 # 🏗️ **I LOVE CAKE**  
 **A Web-based tower-building game where GDG on CNU Discord users compete to build the highest tower.**
+
+![Image](https://github.com/user-attachments/assets/284a3dc2-528b-4048-a1ea-50af4e50fd8d)
 
 ---
 
