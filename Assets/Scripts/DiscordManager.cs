@@ -17,9 +17,9 @@ public class DiscordManager : MonoBehaviour
     private string _userId = "1237";
     public string userId { get { return _userId; } private set { _userId = value; } }
 
-    private const string CLIENT_ID = "1319574653697658890";
-    private const string CLIENT_SECRET = "GalvUlVOeL4Bw0zYLTIT9MLSmAL6HQ5P";
-    private const string REDIRECT_URI = "https://jhuijung.github.io/UnityToyproject_GDG_HostRepo/";
+    private const string CLIENT_ID = "";
+    private const string CLIENT_SECRET = "";
+    private const string REDIRECT_URI = "";
 
     // ΩÃ±€≈Ê ¿ŒΩ∫≈œΩ∫
     public static DiscordManager Inst { get; private set; }

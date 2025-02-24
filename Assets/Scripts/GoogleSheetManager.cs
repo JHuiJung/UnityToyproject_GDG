@@ -40,7 +40,7 @@ public class GoogleSheetManager : MonoBehaviour
     [SerializeField]
     GameObject panel_Loading;
 
-    const string URL = "https://script.google.com/macros/s/AKfycbziS_bkMyK_13Bx64g5fP44dIQn3kPTreQYNB-OgtTIBNV-ukvlPSnef7pbmia9R5XD/exec";
+    const string URL = "";
     public string sheetData = "";
     public GoogleData GD;
 
