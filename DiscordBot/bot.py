@@ -17,7 +17,8 @@ sheet = gc.open_by_url(sheet_url)
 worksheet = sheet.sheet1
 
 utc = datetime.timezone.utc
-time = datetime.time(hour=0, minute=0, tzinfo=utc)
+daily_topic_send_time = datetime.time(hour=0, minute=0, tzinfo=utc)
+daily_ranking_send_time = datetime.time(hour=12, minute=0, tzinfo=utc)
 
 # discord bot
 intents = discord.Intents.default()
@@ -29,13 +30,30 @@ client = discord.Client(intents=intents)
 async def on_ready():   # 클라이언트가 디스코드로부터 데이터를 받을 준비 완료 시
     print(f'Logged in as {client.user}')
     send_daily_topic.start()
+    send_daily_ranking.start()
 
-@ tasks.loop(time=time)
+@tasks.loop(time=daily_topic_send_time)
 async def send_daily_topic():
     today = datetime.date.today()
     daily_topic = daily_topics[today.day - 21]
     channel = client.get_channel(1286291325616128103)
     await channel.send(f'## {daily_topic['topic']}\n**{daily_topic['question']}**')
+
+@tasks.loop(time=daily_ranking_send_time)
+async def send_daily_ranking():
+    names = worksheet.col_values(2)
+    max_heights = worksheet.col_values(5)
+    data = list(zip(names, max_heights))
+    data = data[1:]
+    data.sort(key=lambda x: x[1], reverse=True)
+    top_5_rankings = data[:5]
+
+    channel = client.get_channel(1286291325616128103)
+    message = '## 🏆 오늘의 랭킹\n'
+    for i in range(5):
+        name, ranking = top_5_rankings[i]
+        message += f'- **{i + 1}등 {name}**   {ranking}m\n'
+    await channel.send(message)
 
 @client.event
 async def on_message(message):  # 메시지 전송 완료 시
