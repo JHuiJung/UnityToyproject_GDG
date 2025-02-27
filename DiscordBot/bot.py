@@ -18,7 +18,7 @@ worksheet = sheet.sheet1
 
 utc = datetime.timezone.utc
 daily_topic_send_time = datetime.time(hour=0, minute=0, tzinfo=utc)
-daily_ranking_send_time = datetime.time(hour=11, minute=21, tzinfo=utc)
+daily_ranking_send_time = datetime.time(hour=12, minute=30, tzinfo=utc)
 
 # discord bot
 intents = discord.Intents.default()
