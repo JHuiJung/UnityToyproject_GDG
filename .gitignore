@@ -70,3 +70,21 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# .DS_Store
+/.DS_Store
+
+# .idea
+/.idea/
+
+# python venv
+/.venv/
+
+# env
+/DiscordBot/.env
+
+# discord token
+/DiscordBot/discordbot-444517-5f38a99c735f.json
+
+# AWS EC2
+/DiscordBot/discord-bot-key.pem
